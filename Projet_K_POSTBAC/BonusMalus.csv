@@ -1,0 +1,92 @@
+Bac,BonusMalus,OLD
+  Brevet de Technicien Dessinateur-Maquettiste opt : cartographie,-12,-12
+  Economique et social Economie approfondie,-6,-6
+  Economique et social Langue renforcée,-6,-6
+  Economique et social Mathématiques,-3,-3
+  Economique et social Sciences économiques et sociales,-6,-6
+  Economique et social Sciences sociales et politiques,-8,-8
+  Littéraire Histoire des arts,-12,-12
+  Littéraire Langue renforcée,-10,-10
+  Littéraire Mathématiques,-8,-8
+  Professionnelle Accueil - relation clients et usagers,-12,-12
+  Professionnelle Artisanat et métiers d'art opt. com. graphique,-12,-12
+  Professionnelle Commerce,-12,-12
+  Professionnelle Comptabilité,-12,-12
+"  Professionnelle Electrotechnique, énergie, équipements communicants",-12,-12
+  Professionnelle Logistique (avant réforme),-12,-12
+  Professionnelle Maintenance des équipements industriels,-12,-12
+  Professionnelle Secrétariat,-12,-12
+  Professionnelle Services (accueil assistance conseil),-12,-12
+  Professionnelle Systèmes électroniques numériques,-12,-12
+  Professionnelle Technicien de maintenance de systèmes énergétiques et climatiques,-12,-12
+  Professionnelle Technicien du froid et du conditionnement de l'air,-12,-12
+  Professionnelle Technicien geomètre topographe,-12,-12
+  Professionnelle Traitements de surfaces,-12,-12
+  Sciences et technologie de laboratoire Biotechnologies,-12,-12
+  Sciences et technologie de laboratoire Sciences Physiques et Chimiques en Laboratoire,-12,-12
+  Sciences et technologie industrielles Génie civil,-8,-8
+  Sciences et technologie industrielles Génie électronique,-4,-4
+  Sciences et technologie industrielles Génie électrotechnique,-6,-6
+  Sciences et technologie industrielles Génie mécanique: Productique mécanique,-8,-8
+  Sciences et Technologies de l'Industrie et du Développement Durable Architecture et construction,-6,-8
+  Sciences et Technologies de l'Industrie et du Développement Durable Energies et environnement,-4,-6
+  Sciences et Technologies de l'Industrie et du Développement Durable Innovation Technologique et Eco conception,-6,-8
+  Sciences et Technologies de l'Industrie et du Développement Durable Système informatique et numérique,2,0
+  Sciences et technologies de la gestion Communication et gestion des ressources humaines,-12,-12
+  Sciences et technologies de la gestion Comptabilité et finance d'entreprise,-12,-12
+  Sciences et technologies de la gestion Gestion systèmes d'information,-8,-8
+  Sciences et technologies de la gestion Mercatique,-12,-12
+  Sciences et technologies de la santé et du social ,-12,-12
+  Scientifique Informatique et Sciences du numérique,3,3
+  Scientifique Mathématiques,2,2
+  Scientifique Pas de spécialité (S.I),1,1
+  Scientifique Physique-chimie,2,2
+  Scientifique Sciences de la vie et de la terre,1,1
+ Mercatique Sciences et technologies de la gestion Mercatique,-12,-12
+ Sciences de la vie et de la terre  ,1,1
+ Sciences de la vie et de la terre Scientifique Sciences de la vie et de la terre,1,1
+ES Economie approfondie  ,-6,-6
+ES Mathématiques  ,-3,-3
+ES Sciences sociales et politiques  ,-8,-8
+"FC  Professionnelle Electrotechnique, énergie, équipements communicants",-12,-12
+L Droits et grands enjeux du monde contemporain  ,-10,-10
+L Langue renforcée  ,-10,-10
+L Mathématiques  ,-8,-8
+"P Accompagnement, soins et services à la personne Option B : « en structure »  ",-12,-12
+P Accueil - relation clients et usagers  ,-12,-12
+P Artisanat et métiers d'art - option communication visuelle pluri média  ,-12,-12
+P Commerce  ,-12,-12
+P Comptabilité  ,-12,-12
+"P Electrotechnique, énergie, équipements communicants  ",-12,-12
+P Hygiène et environnement  ,-12,-12
+P Logistique  ,-12,-12
+P Maintenance des équipements industriels  ,-12,-12
+P Maintenance véhic. autom. opt. voitures particul.  ,-12,-12
+P Microtechniques  ,-12,-12
+P Photographie  ,-12,-12
+P Production graphique  ,-12,-12
+P Production imprimée  ,-12,-12
+P Secrétariat  ,-12,-12
+P Systèmes électroniques numériques  ,-12,-12
+P Technicien d'usinage  ,-12,-12
+P Technicien geomètre topographe  ,-12,-12
+P Technicien menuisier agenceur  ,-12,-12
+P Transport  ,-12,-12
+"P Vente (prospection, négociation, suivi de clientèle)  ",-12,-12
+S Informatique et Sciences du numérique  ,3,3
+S Mathématiques  ,2,2
+S Pas de spécialité (S.I)  ,1,1
+S Physique-chimie  ,2,2
+S Sciences de la vie et de la terre  ,1,1
+ST2S   ,-12,-12
+STAV   ,-12,-12
+STI2D Architecture et construction  ,-6,-8
+STI2D Energies et environnement  ,-4,-6
+STI2D Innovation Technologique et Eco conception  ,-6,-8
+STI2D Système informatique et numérique  ,2,0
+STL Biotechnologies  ,-12,-12
+STL Sciences Physiques et Chimiques en Laboratoire  ,-12,-12
+STMG Gestion et Finance  ,-12,-12
+STMG Mercatique  ,-12,-12
+STMG Ressources Humaines et Communication  ,-12,-12
+STMG Systèmes d'information et de gestion  ,-8,-12

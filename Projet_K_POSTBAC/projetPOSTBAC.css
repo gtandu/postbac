@@ -1,0 +1,92 @@
+body
+{
+	width : 100%;
+	background-color : white;	
+}
+h1
+{
+  color : #009ae1;
+  font-size : 3.5em;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  
+}
+h2{
+  color : #009ae1;
+  font-size : 2em;
+  margin-left: 23%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  width: 60%;
+
+}
+
+header
+{
+	text-align : center;
+	color : #FFFFFF;
+}
+
+section.identification
+{
+	width : 85%; 
+	padding : 30px;
+	margin : 200px;
+	background-color : #C9C9D9;
+	border-radius : 10px;	
+	border-width: 5px;
+	border-color : black;
+	border-style: solid;
+}
+
+section.idForm
+{
+	background-color : #01B0F0;
+	padding : 30px;
+	border-radius : 10px;	
+	border-width: 5px;
+	border-color : black;
+	border-style: solid;
+}
+
+.menu,h3
+{
+	text-align: center;
+
+}
+
+
+/******************************* Espace enseignant **************************/
+
+#textAccueil 
+{
+	margin-left: 19%;
+	margin-top: 5%;
+	width: 54%;
+	padding: 1em;
+	border: 1px #009ae1 solid;
+	text-align: center;
+}
+
+#ajoutProf
+{
+	margin-top: 1.5em;
+	margin-left: auto;
+	margin-right: auto;
+	width: 65%;
+	padding: 1em;
+}
+
+button:hover
+{
+
+text-decoration:underline;
+
+}
+
+
+
+
+
+
