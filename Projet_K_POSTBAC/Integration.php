@@ -1,5 +1,6 @@
 <?php 
 
+ini_set('max_execution_time', 300);
 /** Afficher toutes les erreurs */
 header ('Content-type: text/html; charset=UTF-8');
 header ('Conternt-Type: texte/csv');
@@ -33,7 +34,6 @@ $MoyenneFA=get_array($fileCsv4);
 $query= createTable('fichierFA', $fichierFA, $fichierFA[0][1]);
 $query2= createTable('fichierFI', $fichierFI, $fichierFA[0][1]);
 $query3=createTable('MoyenneFI',$MoyenneFI, $MoyenneFI[0][1]);
-echo $query3;
 $query4=createTable('MoyenneFA',$MoyenneFA, $MoyenneFA[0][1]);
 //$query5=createTable('BonusMalus',$BonusMalus, $BonusMalus[0][1]);
 
@@ -76,7 +76,7 @@ tableEtudiantAvecMoyenne($bd);
 eleveSelectionner($bd);
 eleveATraiter($bd);
 elevePostuleFAFI($bd);
- 
+
 
 
 

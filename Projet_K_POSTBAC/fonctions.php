@@ -178,7 +178,7 @@ function createTableID($bd){
   PRIMARY KEY (id))');
 	$req->execute();
 }
-
+createTableID($bd);
 //Nombre d'enseignant enregister dans la base 
 function nbEnseignant($bd){
 	
