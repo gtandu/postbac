@@ -7,7 +7,6 @@
 	
 ?>
 
-
 	<section>
 		
 		<div style="margin-left:auto; margin-right:auto; width:30%; padding-top:2em;"><button class="pure-button pure-button-disabled">IMPORTER</button>
@@ -22,9 +21,5 @@
 
 
 <?php
-		
-// TEST GIT 
-		//echo $_SESSION['admin'];
-
-		require('fin.php'); 
+	require('fin.php'); 
 ?>

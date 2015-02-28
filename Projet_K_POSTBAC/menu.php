@@ -15,24 +15,13 @@
 
 <div id='cssmenu'>
 <ul>
-   <li class='active has-sub' ><a href='accueil.php'>Home</a></li>
-   <li ><a href='contenu.php'>Espace Enseignants</a>
-      <!--<ul>
-         <li class='has-sub'><a href='#'>Product 1</a>
-            <ul>
-               <li><a href='#'>Sub Product</a></li>
-            </ul>
-         </li>
-         <li class='has-sub'><a href='#'>Product 2</a>
-            <ul>
-               <li><a href='#'>Sub Product</a></li>
-            </ul>
-         </li>
-      </ul>-->
-   </li>
-   <li><a href='liste.php'>Listes Etudiants</a></li>
-   <li><a href='dossierATraiter.php'>Dossier à Traiter</a></li>
-   <li><a href='deconnexion.php'>Déconnexion</a></li>
+	
+	<li class='active has-sub' ><a href='accueil.php'>Home</a></li>
+	<li><a href='profil.php'>Mon Profil</a></li>
+	<li ><a href='contenu.php'>Espace Enseignants</a></li>
+	<li><a href='liste.php'>Listes Etudiants</a></li>
+	<li><a href='dossierATraiter.php'>Dossier à Traiter</a></li>
+	<li><a href='deconnexion.php'>Déconnexion</a></li>
 </ul>
 </div>
 
