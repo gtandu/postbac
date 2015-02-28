@@ -193,11 +193,28 @@ function nbEnseignant($bd){
 	} 
 }
 
+// Fonction qui genere des mots de passe aleatoirement
+function generer_mot_de_passe($nb_caractere)
+{
+        $mot_de_passe = "";
+       
+        $chaine = "abcdefghjkmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ023456789+@!$%?&";
+        $longeur_chaine = strlen($chaine);
+       
+        for($i = 1; $i <= $nb_caractere; $i++)
+        {
+            $place_aleatoire = mt_rand(0,($longeur_chaine-1));
+            $mot_de_passe .= $chaine[$place_aleatoire];
+        }
+
+        return $mot_de_passe;   
+}
+
 //Insertion des données de l'enseignant a partir du formulaire 
 function insertDataEnseignants($bd){
 
 	$nb=nbEnseignant($bd);
-
+	$mdp=generer_mot_de_passe(8);
     if(isset($_GET['nom']) && trim($_GET['nom']!=NULL) && isset($_GET['prenom']) && trim($_GET['prenom']!=NULL) && isset($_GET['matiere']) && trim($_GET['matiere']!=NULL) && isset($_GET['email']) && trim($_GET['email']))
     {
         $query='INSERT INTO identification VALUE ( :id, :nom, :prenom, :email ,:mdp, :matiere, 0)';
@@ -208,7 +225,7 @@ function insertDataEnseignants($bd){
 
         $req->bindValue(':email', $_GET['email']);
 
-        $req->bindValue(':mdp', 'bonjour');
+        $req->bindValue(':mdp', $mdp);
         $req->bindValue(':matiere', $_GET['matiere']);
        
         if($req->execute())
