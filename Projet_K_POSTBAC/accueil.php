@@ -9,7 +9,7 @@
 
 	<section>
 		
-		<div style="margin-left:auto; margin-right:auto; width:30%; padding-top:2em;"><button class="pure-button pure-button-disabled">IMPORTER</button>
+		<div style="margin-left:auto; margin-right:auto; width:30%; padding-top:2em;">
 
 
 
