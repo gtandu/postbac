@@ -322,7 +322,7 @@ function afficheProf($bd){
 
 				echo '
 				<tr>
-				<td style="text-align:center;">'.$tmp1['id'].'</td>
+				<td style="text-align:center;">'.$tmp1['nom'].'</td> // id
 				<td style="text-align:center;">'.$tmp1['prenom'].'</td>
 				<td style="text-align:center;">'.$tmp1['matiere'].'</td>
 				</tr>';
