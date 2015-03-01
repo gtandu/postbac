@@ -1,4 +1,5 @@
 <?php
+		session_start();
 		require_once('connexion.php');
 		require('debut.php'); 
 		ini_set('display_errors',1);
@@ -20,7 +21,6 @@
 			//print_r($_POST);
 			if (isset($_POST['name']) && $_POST['name'] == $rep['nom']){
 				if (isset($_POST['password']) && $_POST['password'] == $rep['mdp']){
-					session_start();
 					$_SESSION['admin']=$rep['admin'];
 					$_SESSION['name']=$rep['nom'];
 					header('location: accueil.php');
