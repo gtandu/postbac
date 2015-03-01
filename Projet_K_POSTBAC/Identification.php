@@ -23,7 +23,11 @@
 			//print_r($_POST);
 			if (isset($_POST['name']) && $_POST['name'] == $rep['nom']){
 				if (isset($_POST['password']) && $_POST['password'] == $rep['mdp']){
+<<<<<<< HEAD
 
+=======
+					
+>>>>>>> origin/master
 					$_SESSION['admin']=$rep['admin'];
 					$_SESSION['name']=$rep['nom'];
 					echo '<script language="Javascript">
