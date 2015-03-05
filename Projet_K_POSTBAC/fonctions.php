@@ -211,26 +211,32 @@ function generer_mot_de_passe($nb_caractere)
 
 function generer_login($bd, $nom, $prenom)
 {
-	// A FINIR !
 	$login="";
 	$login=$prenom[0].$nom;
+	$tab=array();
 	
 	$query='SELECT login FROM identification where nom = :nom and prenom = :prenom';
 	$req=$bd->prepare($query, array(PDO::ATTR_CURSOR, PDO::CURSOR_SCROLL));
     $req->bindValue('nom', $nom);
 	$req->bindValue('prenom', $prenom);
 	$req->execute();
-	$rep = $req->fetch(PDO::FETCH_ASSOC);
 	$nbreq = $req->rowCount();
+	
+	$rep = $req->fetchAll(PDO::FETCH_COLUMN,0);
+
+	for($i=0; $i<count($rep) ; $i++){
+		$tab[$i]=$rep[$i];
+	}
+	
 	if($nbreq!=0){
 		// Login deja existant dans la bdd
-		$derniercaractere = substr($rep['login'][$nbreq-1],-1);
+		$max = count($rep)-1;
+		$derniercaractere = substr($tab[$max],-1);
 		if(is_numeric($derniercaractere))
 			// Dernier caractere est un nombre on incremente
 		{
-			$login = str_replace($derniercaractere, $derniercaractere+1, $login);
-			echo $login.'Incrementer';
-			return $login.'Incrementer';
+			$login.=$derniercaractere+1;
+			return $login;
 		}
 		
 		else
@@ -259,10 +265,7 @@ function insertDataEnseignants($bd){
     {
 
 		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
-		echo $login;
 		$derniercaractere = substr($login,-1);
-		echo '<br/>';
-		echo '<br/>';
         $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0)';
         $req=$bd->prepare($query);
         $req->bindValue('login', $login);

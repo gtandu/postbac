@@ -28,8 +28,8 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="profil.js"></script>
-<form method="$_GET" class="pure-form pure-form-aligned" id="ajoutProf" action="ajoutProf.php">
-    <fieldset>
+<form method="$_GET" class="pure-form pure-form-aligned" action="profil.php">
+    <fieldset><center>
         <div class="pure-control-group">
             <label for="nom">Identifiant :</label>
 			<?php
@@ -68,6 +68,7 @@
 		
 		<div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button></div>
 		
+		<br/>
 		
 		<span> Changer d'adresse mail <span>
 			<p>
@@ -87,6 +88,6 @@
         <div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button></div>
          
         </div>
-    </fieldset>
+    </fieldset></center>
 </form>
 
