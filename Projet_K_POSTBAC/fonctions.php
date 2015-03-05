@@ -167,14 +167,14 @@ function insert($bd, $nomTable, $array_file){
 function createTableID($bd){
 
 	$req=$bd->prepare(' CREATE TABLE IF NOT EXISTS  identification  (
- `id` INTEGER ,
+ `login` VARCHAR( 50 ) NOT NULL ,
  `nom` VARCHAR( 50 ) NOT NULL ,
  `prenom` VARCHAR( 50 ) NOT NULL ,
   `email` VARCHAR( 50 ) NOT NULL ,
   `mdp` VARCHAR( 50 ) NOT NULL ,
  `matiere` VARCHAR( 50 ) NOT NULL ,
  `admin` INTEGER NOT NULL,
-  PRIMARY KEY (id))');
+  PRIMARY KEY (login))');
 	$req->execute();
 }
 createTableID($bd);
@@ -209,16 +209,63 @@ function generer_mot_de_passe($nb_caractere)
         return $mot_de_passe;   
 }
 
+function generer_login($bd, $nom, $prenom)
+{
+	// A FINIR !
+	$login="";
+	$login=$prenom[0].$nom;
+	
+	$query='SELECT login FROM identification where nom = :nom and prenom = :prenom';
+	$req=$bd->prepare($query, array(PDO::ATTR_CURSOR, PDO::CURSOR_SCROLL));
+    $req->bindValue('nom', $nom);
+	$req->bindValue('prenom', $prenom);
+	$req->execute();
+	$rep = $req->fetch(PDO::FETCH_ASSOC);
+	$nbreq = $req->rowCount();
+	if($nbreq!=0){
+		// Login deja existant dans la bdd
+		$derniercaractere = substr($rep['login'][$nbreq-1],-1);
+		if(is_numeric($derniercaractere))
+			// Dernier caractere est un nombre on incremente
+		{
+			$login = str_replace($derniercaractere, $derniercaractere+1, $login);
+			echo $login.'Incrementer';
+			return $login.'Incrementer';
+		}
+		
+		else
+		{
+			// Sinon on cree le login tout simplement
+
+			$login=$login.'1';
+			return $login;
+			
+		}	
+			
+	}
+	
+	else
+		// Login pas dans la base. 1ere creation
+	{
+		return $login;
+	}
+	
+}
 //Insertion des données de l'enseignant a partir du formulaire 
 function insertDataEnseignants($bd){
 
-	$nb=nbEnseignant($bd);
 	$mdp=generer_mot_de_passe(8);
     if(isset($_GET['nom']) && trim($_GET['nom']!=NULL) && isset($_GET['prenom']) && trim($_GET['prenom']!=NULL) && isset($_GET['matiere']) && trim($_GET['matiere']!=NULL) && isset($_GET['email']) && trim($_GET['email']))
     {
-        $query='INSERT INTO identification VALUE ( :id, :nom, :prenom, :email ,:mdp, :matiere, 0)';
+
+		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
+		echo $login;
+		$derniercaractere = substr($login,-1);
+		echo '<br/>';
+		echo '<br/>';
+        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0)';
         $req=$bd->prepare($query);
-        $req->bindValue('id', $nb);
+        $req->bindValue('login', $login);
         $req->bindValue(':nom', $_GET['nom']);
         $req->bindValue(':prenom', $_GET['prenom']);
 
@@ -233,6 +280,13 @@ function insertDataEnseignants($bd){
         	echo '<div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_GET['nom'] .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div>';
         };
     }
+}
+
+function majIdentifiantEnseignant($bd){
+	if(isset($_GET['nom']) && trim($_GET['nom']!=NULL))
+	{
+		 $query='UPDATE identification SET nom = :nom WHERE login = :login';	
+	}
 }
 
 // Récupération des enseignant dans la table et affichage du tableau 

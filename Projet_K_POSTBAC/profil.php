@@ -30,14 +30,14 @@
 <script src="profil.js"></script>
 <form method="$_GET" class="pure-form pure-form-aligned" id="ajoutProf" action="ajoutProf.php">
     <fieldset>
-        <div class="input-group">
+        <div class="pure-control-group">
             <label for="nom">Identifiant :</label>
 			<?php
 				echo $_SESSION['name']; // On affiche le nom du prof qui a sa session d'active
 			?>
         </div>
 		<br/>
-		<div class="input-group">
+		<div class="pure-control-group">
             <label for="matiere">Matière :</label>
 			<?php
 				echo $matiere; // On affiche la matiere que du prof
@@ -48,7 +48,7 @@
 		
 		<span> Changer de mot de passe </span>
 		
-        <div class="input-group">
+        <div class="pure-control-group">
 		<p>
             <label for="mdp_actuel">Mot de passe actuel</label>
             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
@@ -67,15 +67,14 @@
         </p>
 		
 		<div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button></div>
-		</div>
+		
 		
 		<span> Changer d'adresse mail <span>
 			<p>
-				<div class="input-group margin-bottom-sm">
-					<label for="email">Email </label>
-					<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-					<input class="form-control" type="text" placeholder="Adresse Email" name="adresse_mail" value="<?php echo $mail?>">
-				</div>
+				<label for="email">Email </label>
+				<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+				<input class="form-control" type="email" placeholder="Adresse Email" name="adresse_mail" value="<?php echo $mail?>">
+				
 			</p>
 			
 			<p>
@@ -83,7 +82,7 @@
 				<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 				<input class="form-control" type="password" placeholder="Mot de passe" name ="mdp_actuel">
 			</p>
- 
+		</div>
 
         <div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button></div>
          
