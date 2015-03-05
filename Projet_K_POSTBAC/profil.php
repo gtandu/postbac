@@ -28,7 +28,7 @@
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="profil.js"></script>
-<form method="$_GET" class="pure-form pure-form-aligned" action="profil.php">
+<form method="post" class="pure-form pure-form-aligned" action="profil.php">
     <fieldset><center>
         <div class="pure-control-group">
             <label for="nom">Identifiant :</label>

@@ -285,11 +285,21 @@ function insertDataEnseignants($bd){
     }
 }
 
-function majIdentifiantEnseignant($bd){
-	if(isset($_GET['nom']) && trim($_GET['nom']!=NULL))
+function majMdpEnseignant($bd){
+	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['mdp_new']) && trim($_POST['mdp_new']!=NULL))
 	{
-		 $query='UPDATE identification SET nom = :nom WHERE login = :login';	
+		$query='UPDATE identification SET mdp = :mdp_new WHERE login = :login and mdp = :mdp_actuel';
+		$req=$bd->prepare($query);
+		$req->bindValue('login',$_SESSION['name']);
+		$req->bindValue('mdp_actuel',$_POST['mdp_actuel']);
+		$req->bindValue('mdp_new', $_POST['mdp_new']);
 	}
+}
+
+function MajEmailEnseignant($bd){
+	
+	
+
 }
 
 // Récupération des enseignant dans la table et affichage du tableau 
