@@ -28,11 +28,11 @@
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
 			//print_r($_POST);
-			if (isset($_POST['name']) && $_POST['name'] == $rep['nom']){
+			if (isset($_POST['name']) && $_POST['name'] == $rep['login']){
 				if (isset($_POST['password']) && $_POST['password'] == $rep['mdp']){
 
 					$_SESSION['admin']=$rep['admin'];
-					$_SESSION['name']=$rep['nom'];
+					$_SESSION['name']=$rep['login'];
 					echo '<script language="Javascript">
 					document.location.replace("accueil.php");
 					</script>';
