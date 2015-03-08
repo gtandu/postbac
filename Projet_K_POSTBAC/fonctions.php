@@ -348,7 +348,7 @@ function afficheProf($bd){
 				<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
 				<td style="text-align:center;">'.$tmp1['prenom'].'</td>
 				<td style="text-align:center;">'.$tmp1['matiere'].'</td>
-				<td style="text-align:center;"><a href="modifProf.php class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
+				<td style="text-align:center;"><a href="modifProf.php" class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
 				<td style="text-align:center;"><img src="effacer.png" class="supprimer"></td>
 				</tr>';
 
