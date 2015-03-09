@@ -285,6 +285,31 @@ function insertDataEnseignants($bd){
     }
 }
 
+function modifDataEnseignants($bd){
+//Modification des données de l'enseigant à partir du forumulaire modifProf
+	
+    if(isset($_POST['nom']) && trim($_POST['nom']!=NULL) && isset($_POST['prenom']) && trim($_POST['prenom']!=NULL) && isset($_POST['matiere']) && trim($_POST['matiere']!=NULL) && isset($_POST['email']) && trim($_POST['email']))
+    {
+
+		
+		
+        $query='UPDATE identification SET nom=:nom, prenom=:prenom, email=:email, matiere=:matiere WHERE login=:login  ';
+        $req=$bd->prepare($query);
+        $req->bindValue('login', $_POST['login']);
+        $req->bindValue(':nom', $_POST['nom']);
+        $req->bindValue(':prenom', $_POST['prenom']);
+		$req->bindValue(':email', $_POST['email']);
+		$req->bindValue(':matiere', $_POST['matiere']);
+       
+        if($req->execute())
+        {
+        	
+        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_POST['nom'] .' '. $_POST['prenom'] .' à bien été moddifier !</strong></p></div></center>';
+        };
+    }
+}
+
+
 function majMdpEnseignant($bd){
 	// A finir
 	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['mdp_new']) && trim($_POST['mdp_new']!=NULL))
@@ -326,17 +351,15 @@ function afficheProf($bd){
 
 		while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '
-			<form method="post" action="contenu.php">
-			<tr>
+			echo '<tr>
 			<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
 			<td style="text-align:center;">'.$tmp1['prenom'].'</td>
 			<td style="text-align:center;">'.$tmp1['matiere'].'</td>
-			<td style="text-align:center;"><a href="modifProf.php class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
-			<td style="text-align:center;"><INPUT type="image" src="effacer.png" ></td>
-			</tr>
-			<input type="hidden" name="supProf" value="'.$tmp1['login'].'"/>
-			</form>';
+			<td style="text-align:center;"><form method="post" action="modifProf.php"><INPUT type="image" src="modifier.png" >
+				<input type="hidden" name="modif" value="'.$tmp1['login'].'"/></form></td>
+			<td style="text-align:center;"><form method="post" action="contenu.php"><INPUT type="image" src="effacer.png" >
+				<input type="hidden" name="supProf" value="'.$tmp1['login'].'"/></form></td>
+			</tr>';
 
 		}
 		echo '</table>';
