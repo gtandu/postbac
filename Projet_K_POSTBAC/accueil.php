@@ -21,10 +21,9 @@
 	</section>
 
 
-
 <?php
 		
-
+// TEST GIT 
 		//echo $_SESSION['admin'];
 
 		require('fin.php'); 
