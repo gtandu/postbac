@@ -404,9 +404,14 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 	if ($_SESSION['admin']==1){
 		
 		
-		echo '<form action="dossierATraiter.php" method = "post">
-		<center><input style="margin-top:2em; padding-left:2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" value="Attribuer"/></center>';
 		
+		echo '<form action="dossierATraiter.php" method = "post" name="monform" id="monform">
+		<center><input style="margin-top:2em; padding-left:2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" value="Attribuer"/><br/></center><br/>';
+
+		//chekbox qui permet de cocher tous les chekbox avec le nom selection 
+		
+echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
+
 
 		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
