@@ -405,7 +405,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		
 		
 		
-		echo '<form action="dossierATraiter.php" method = "post" name="monform" id="monform">
+		echo '<form action="dossierATraiter.php" method = "post" >
 		<center><input style="margin-top:2em; padding-left:2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" value="Attribuer"/><br/></center><br/>';
 
 		//chekbox qui permet de cocher tous les chekbox avec le nom selection 
