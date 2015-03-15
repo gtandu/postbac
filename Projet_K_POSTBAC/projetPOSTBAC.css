@@ -85,6 +85,16 @@ text-decoration:underline;
 	background-color: #C8C8C8 ;
 }
 
+span{
+FONT:bold 12 Arial; CURSOR:pointer
+}
 
+.arrow2{
 
+display:inline-block;
+vertical-align:10px;
+}
 
+.arrow{
+display:inline-block;
+}

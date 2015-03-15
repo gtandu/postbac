@@ -413,9 +413,18 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
 
 
-		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 		<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Selectionner</th></tr> ';
+ 		<tr >
+			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>Numero</th>
+			<th><div class=arrow2>Bac</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>BonusMalus</th>
+			<th>AvisCE</th>
+			<th>Selectionner</th>
+			</tr> ';
 
 		if ($f == 'fi')
 		{
@@ -432,8 +441,10 @@ echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="
 		
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-			<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
+			if($rep['Moyenne']==NULL)echo '<td>0</td>';
+			else echo '<td>'.$rep['Moyenne'].'</td>';
+			echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
 			'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
 		}
 		
@@ -443,10 +454,17 @@ echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="
 	}
 	else{
 
-		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 		<tr><th>Nom</th> <th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th>';
- 		echo '</div>';
+ 		<tr >
+			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>Numero</th>
+			<th><div class=arrow2>Bac</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>BonusMalus</th>
+			<th>AvisCE</th>
+			</tr> ';
 
 		if ($f == 'fi')
 		{
@@ -461,8 +479,10 @@ echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="
 		}
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-			<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
+			if($rep['Moyenne']==NULL)echo '<td>0</td>';
+			else echo '<td>'.$rep['Moyenne'].'</td>';
+			echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
 			'</td></tr>';
 		}
 
