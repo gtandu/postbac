@@ -399,6 +399,105 @@ function supprimeProf($bd, $loginProf){
 }
 //supprimeProf($bd, "GTandu2");
 
+
+//----------------------------------------------------------------------------------//
+//       Fonction pour la gestion et l'affichage des étudiants                          //
+//--------------------------------------------------------------------------------//
+
+//fonction qui retourne True si l'étudiant ($num) a postulé dans les deux filière
+function postule2filiere($bd,$num){
+	
+	$query="SELECT Numero FROM EtudiantFIFA";
+	$req=$bd->prepare($query);
+	$req->execute();	
+
+	while($rep = $req->fetch(PDO::FETCH_ASSOC))
+		{
+			if ($num == $rep['Numero'])
+			{
+				$query="DELETE FROM  EtudiantFI WHERE Numero = :num";
+				$req2=$bd->prepare($query);
+				$req2->bindValue('num',$num);
+				$req2->execute();
+				return 'OUI';
+			}
+		}
+		return 'NON';
+
+}
+
+//Ajoute une colonne pour l'identifiant de l'enseignant qui se chargera du dossier dans les fichiers Etudiants 
+//retourn TRUE : colonne déja ajouté, FALSE sinon
+function ajoutColonneEnseignant($bd){
+
+	//Vérifie si la colonne 'enseignant' existe dans la table EtudiantFA
+	$query="SHOW COLUMNS FROM EtudiantFA LIKE 'enseignant'";
+	$req=$bd->prepare($query);
+	$req->execute();
+
+	$query2="SHOW COLUMNS FROM EtudiantFI LIKE 'enseignant'";
+	$req2=$bd->prepare($query2);
+	$req2->execute();
+
+	$return=FALSE;
+	
+	if ($req->fetch(PDO::FETCH_ASSOC) == false)
+	{
+		$query="ALTER TABLE EtudiantFA ADD enseignant VARCHAR(255)";
+		$req=$bd->prepare($query);
+		$req->execute();
+	}
+	else{
+		$return=TRUE; 
+	}
+
+	if ($req2->fetch(PDO::FETCH_ASSOC) == false)
+	{
+		$query="ALTER TABLE EtudiantFI ADD enseignant VARCHAR(255)";
+		$req3=$bd->prepare($query);
+		$req3->execute();
+	}
+	else{
+		$return=TRUE;
+	}
+
+	return $return;
+	
+}
+// $test = ajoutColonneEnseignant($bd);
+// echo $test;
+
+
+//Fonction qui ajoute le login($prof) d'un enseigant à un candidat($id) dans la colonne prévu à cet effet(enseignant) dans la table etudiant passé en paramètre($filiere) 
+function ajoutLoginEnseignant($bd, $prof, $filiere, $id){
+
+	$colonne=ajoutColonneEnseignant($bd);
+
+	if ($colonne !== FALSE){
+
+		$query="UPDATE ".$filiere." SET enseignant = :prof WHERE Numero = :id";// trouver moyen d'inserer que pour un élève
+		$req=$bd->prepare($query);
+		$req->bindValue('prof',$prof);
+		$req->bindValue('id',$id);
+		$req->execute();
+
+		return TRUE;
+	}	
+}
+// ajoutLoginEnseignant($bd, 'test', 'EtudiantFA', 646617);
+
+//Renvoi les informations de l'étudiant qui est passé en paramètre ($id)
+function searchEleve($bd, $id, $fi){
+
+	$query="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, AvisDuCE FROM ".$fi." WHERE Numero = :id ";
+	$req=$bd->prepare($query);
+	$req->bindValue('id',$id);
+	$req->execute();
+	return $req->fetch(PDO::FETCH_ASSOC);
+}
+// $test = searchEleve($bd, 646617, 'AtraiterFA');
+// print_r($test);
+
 function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons Alternance/initiale au-dessus de la liste )
 {							 // avec une checkbox avec comme valeur le num de l'eleve
 	if ($_SESSION['admin']==1){
@@ -410,31 +509,47 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 
 		//chekbox qui permet de cocher tous les chekbox avec le nom selection 
 		
-echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
-
-
-		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
-		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 		<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Selectionner</th></tr> ';
+		// echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
 
 		if ($f == 'fi')
-		{
+		{	
+			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
+			<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
+ 			<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Selectionner</th></tr> ';
+
 			$req = $bd->prepare('select * from AtraiterFI');
 			$req->execute();
+			
+			//Permet de récuperer le nom de la filiere dans la variable POST
+			echo '<input type="hidden" name="filiere" value="'.$f.'"/>';
+
+			while($rep = $req->fetch(PDO::FETCH_ASSOC))
+			{	
+				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+				'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+			}
 		}
 		else
 		{
+			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
+			<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
+ 			<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Postule en Initiale</th><th>Selectionner</th></tr> ';
+
 			$req = $bd->prepare('select * from AtraiterFA');
 			$req->execute();
-			
-		}
 
-		
-		while($rep = $req->fetch(PDO::FETCH_ASSOC))
-		{
-			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-			<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-			'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+			//Permet de récuperer le nom de la filiere dans la variable POST
+			echo '<input type="hidden" name="filiere" value="'.$f.'"/>';
+
+			while($rep = $req->fetch(PDO::FETCH_ASSOC))
+			{
+				$filiere=postule2filiere($bd,$rep['Numero']);
+				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+				'</td><td>'.$filiere.'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+			}
+			
 		}
 		
 		echo "</form></table></center>";
@@ -569,7 +684,7 @@ function eleveATraiter($bd)
 	$rep = $req->fetch(PDO::FETCH_NUM);
 	
 	 $calcul = $rep[0]/4;
-	 $req = $bd->prepare('CREATE TABLE IF NOT EXISTS AtraiterFA  
+	 $req = $bd->prepare('CREATE VIEW AtraiterFA (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE) 
 	 					  AS SELECT  
 	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA 
 	 					  ORDER BY Moyenne DESC LIMIT :limite, :offset');
@@ -579,9 +694,9 @@ function eleveATraiter($bd)
 	 $req->bindValue(':offset', $calcul, PDO::PARAM_INT);
 	 $req->execute();
 
-	 $req = $bd->prepare('ALTER TABLE AtraiterFA ADD PRIMARY KEY (Numero)');
-	 $req->execute();
-	  echo 'AtraiterFA TABLE CREATE';
+	 // $req = $bd->prepare('ALTER TABLE AtraiterFA ADD PRIMARY KEY (Numero)');
+	 // $req->execute();
+	  echo 'AtraiterFA VIEW CREATE';
 	
 	/////////////////////CAS FI/////////////////////
 	//											  //
@@ -594,7 +709,7 @@ function eleveATraiter($bd)
 	
 	$calcul = $rep[0]/4; // On calcule le 1/4
 
-	$req = $bd->prepare('CREATE TABLE IF NOT EXISTS AtraiterFI  
+	$req = $bd->prepare('CREATE VIEW AtraiterFI (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE)
 	 					  AS SELECT  
 	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI 
 	 					  ORDER BY Moyenne DESC LIMIT :limite, :offset');
@@ -604,9 +719,9 @@ function eleveATraiter($bd)
 	 $req->bindValue(':offset', $calcul, PDO::PARAM_INT);
 	 $req->execute();
 
-	 $req = $bd->prepare('ALTER TABLE AtraiterFI ADD PRIMARY KEY (Numero)');
-	 $req->execute();
-	 echo 'AtraiterFI TABLE CREATE';
+	 // $req = $bd->prepare('ALTER TABLE AtraiterFI ADD PRIMARY KEY (Numero)');
+	 // $req->execute();
+	 echo 'AtraiterFI VIEW CREATE';
 	
 }
 //eleveATraiter($bd);

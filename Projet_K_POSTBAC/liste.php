@@ -16,9 +16,9 @@
 	<center>
 	<form method="GET">
 			
-			<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" name="affiche" value="Filière initiale"/>
+			<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" name="fi" value="Filière initiale"/>
 		
-			<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" name="affiche" value="Filière alternance"/>
+			<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" name="fa" value="Filière alternance"/>
 			
 	</form>
 	</center>
@@ -47,13 +47,13 @@ function CocheTout(ref, name) {
 
 
 
-if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['affiche']) && $_GET['affiche']=='Filière initiale'){
+if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['fi'])){
 
 	echo "<center>";
 	afficheEleve('fi',$bd); // à la place de 'fi', on mettra le $_POST du bouton, 
 	echo "</center>";					//celui qui decide si on affiche les alternants ou les initiales
 }
-elseif ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['affiche']) && $_GET['affiche']=='Filière alternance'){
+elseif ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['fa'])){
 	
 	echo "<center>";
 	afficheEleve('fa',$bd);
@@ -61,7 +61,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['affiche']) && $_GET[
 
 }
 
-
+print_r($_GET);
 
 
 ?>
