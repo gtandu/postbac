@@ -8,6 +8,7 @@
 	
 ?>
 // A Faire le CSS et modif avec le bouton enregistrer
+
 <?php
 	$req=$bd -> prepare('SELECT * FROM identification');
 	$req->execute();
