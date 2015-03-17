@@ -10,10 +10,10 @@
 ?>
 
 
-
-<p id='textAccueil'><strong>Cet espace permet l'affichage des différents candidats, veuillez selectionner mode d'affichage :</strong></p> 
-
-	<div style="margin-left: auto; margin-right:auto; width: 35%; padding-top:2em; ">
+<br>
+<center><p id='textAccueil'><strong>Cet espace permet l'affichage des différents candidats, veuillez selectionner mode d'affichage :</strong></p></center> 
+<br>
+	<center>
 	<form method="GET">
 			
 			<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" name="affiche" value="Filière initiale"/>
@@ -21,7 +21,7 @@
 			<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" name="affiche" value="Filière alternance"/>
 			
 	</form>
-	</div>
+	</center>
 
 
 
@@ -31,13 +31,15 @@
 
 if ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['affiche']) && $_GET['affiche']=='Filière initiale'){
 
+	echo "<center>";
 	afficheEleve('fi',$bd); // à la place de 'fi', on mettra le $_POST du bouton, 
-						//celui qui decide si on affiche les alternants ou les initiales
+	echo "</center>";					//celui qui decide si on affiche les alternants ou les initiales
 }
 elseif ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['affiche']) && $_GET['affiche']=='Filière alternance'){
 	
-
+	echo "<center>";
 	afficheEleve('fa',$bd);
+	echo "</center>";
 
 }
 

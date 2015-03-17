@@ -1,7 +1,7 @@
 <?php
 
 require('connexion.php'); //Permet la connexion à la base de données
-//header ('Content-type: text/html; charset=UTF-8');
+header ('Content-type: text/html; charset=UTF-8');
 ini_set('display_errors', 1); 
 error_reporting(E_ALL); //Affiche toutes les erreurs
 
@@ -251,7 +251,7 @@ function afficheProf($bd){
 		if (empty($rep))
 		{
 			echo '
-			<table class="pure-table-horizontal" border="1" CELLPADDING="15" style="margin-left: 19%; margin-top: 3%; width: 57%;">
+			<table class="pure-table-horizontal" border="1" CELLPADDING="20" style="width: 57%;">
 			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
 			<tr>
 			<th>Nom</th>
@@ -264,7 +264,7 @@ function afficheProf($bd){
 			$tmp= array_keys($rep);
 
 			echo '
-			<table class="pure-table" border="1" CELLPADDING="15" style="margin-left: 19%; margin-top: 3%; width: 57%;">
+			<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
 			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
 			<tr class="pure-table-odd">
 			<th>Nom</th>
@@ -295,7 +295,7 @@ function afficheProf($bd){
 		if (empty($rep))
 		{
 			echo '
-			<table class="pure-table-horizontal" border="1" CELLPADDING="15" style="margin-left: 19%; margin-top: 3%; width: 57%;">
+			<table class="pure-table-horizontal" border="1" CELLPADDING="20" style="width: 57%;">
 			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
 			<tr>
 			<th>Nom</th>
@@ -309,7 +309,7 @@ function afficheProf($bd){
 			$tmp= array_keys($rep);
 
 			echo '
-			<table class="pure-table" border="1" CELLPADDING="15" style="margin-left: 19%; margin-top: 3%; width: 57%;">
+			<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
 			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
 			<tr class="pure-table-odd">
 			<th>Nom</th>
@@ -336,12 +336,12 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 {							 // avec une checkbox avec comme valeur le num de l'eleve
 	if ($_SESSION['admin']==1){
 		
-		echo '<div style="margin-left: auto; margin-right: auto; width: 19%; padding-top:2em;">';
+		
 		echo '<form action="dossierATraiter.php" method = "post">
-		<input style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" value="Attribuer"/>';
-		echo '</div>';
+		<center><input style="margin-top:2em; padding-left:2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-input-1-2 pure-button-primary" value="Attribuer"/></center>';
+		
 
-		echo '<table class="pure-table-horizontal" border="1" CELLPADDING="15" style="margin-left: 5%; margin-top: 3%; width: 57%;">
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Selectionner</th></tr> ';
 
@@ -365,13 +365,13 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
 		}
 		
+		echo "</form></table></center>";
+
 
 	}
 	else{
 
-		echo '<div style="margin-left: auto; margin-right: auto; width: 19%; padding-top:2em;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-disabled">Attribuer</button></div>';
-
-		echo '<table class="pure-table-horizontal" border="1" CELLPADDING="15" style="margin-left: 10%; margin-top: 3%; width: 57%;">
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr><th>Nom</th> <th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th>';
  		echo '</div>';
@@ -393,9 +393,15 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
 			'</td></tr>';
 		}
+
+		echo "</table></center>";
 	}
 
 }
+
+//----------------------------------------------------------------------------------//
+//       Fonction pour la créaction, la gestion et l'affichage des enseignants     //
+//--------------------------------------------------------------------------------//	
 
 //Création des tables des etudiant FA et FI avec leurs moyennes
 function tableEtudiantAvecMoyenne($bd){
@@ -406,7 +412,7 @@ function tableEtudiantAvecMoyenne($bd){
 
 	$req = $bd->prepare('CREATE TABLE IF NOT EXISTS EtudiantFA AS 
 	
-			SELECT  MoyenneFA.RangProvisoire, MoyenneFA.Numero, MoyenneFA.Nom, MoyenneFA.Prénom, MoyenneFA.InfosDiplôme, 
+			SELECT  MoyenneFA.RangProvisoire, MoyenneFA.Numero, MoyenneFA.Nom, MoyenneFA.Prénom, MoyenneFA.InfosDiplôme, fichierFA.Spécialité,
 			
 			MoyenneFA.Moyenne, MoyenneFA.NombreDeBonusMalusAppliqués, fichierFA.AvisDuCE
 
@@ -423,7 +429,7 @@ function tableEtudiantAvecMoyenne($bd){
 
 	$req = $bd->prepare('CREATE TABLE IF NOT EXISTS EtudiantFI AS 
 	
-			SELECT  MoyenneFI.RangProvisoire, MoyenneFI.Numero, MoyenneFI.Nom, MoyenneFI.Prénom, MoyenneFI.InfosDiplôme, 
+			SELECT  MoyenneFI.RangProvisoire, MoyenneFI.Numero, MoyenneFI.Nom, MoyenneFI.Prénom, MoyenneFI.InfosDiplôme, fichierFI.Spécialité,
 			
 			MoyenneFI.Moyenne, MoyenneFI.NombreDeBonusMalusAppliqués, fichierFI.AvisDuCE
 
@@ -435,6 +441,8 @@ function tableEtudiantAvecMoyenne($bd){
 	echo 'EtudiantFI TABLE CREATE';
 
 }
+//tableEtudiantAvecMoyenne($bd);
+
 
 //On créer des vues sur le élèves sélectionné au premier tour
 function eleveSelectionner($bd){
@@ -449,9 +457,9 @@ function eleveSelectionner($bd){
 	
 	$calcul = $rep[0]/4; // On calcule le 1/4
 	
-	$req = $bd->prepare('CREATE VIEW SelectionneFA (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE)
+	$req = $bd->prepare('CREATE VIEW SelectionneFA (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE)
 						AS SELECT 
-						RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA ORDER BY Moyenne DESC LIMIT '.$calcul);//on insere ds la nouvelle table les eleves du 1° quart qui sont admis d'office
+						RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA ORDER BY Moyenne DESC LIMIT '.$calcul);//on insere ds la nouvelle table les eleves du 1° quart qui sont admis d'office
 	$req->execute();
 	echo 'SelectionneFA VIEW CREATE';
 	
@@ -466,13 +474,14 @@ function eleveSelectionner($bd){
 	
 	$calcul = $rep[0]/4; // On calcule le 1/4
 
-	$req = $bd->prepare('CREATE VIEW SelectionneFI (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE)
+	$req = $bd->prepare('CREATE VIEW SelectionneFI (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE)
 						AS SELECT 
-						RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI ORDER BY Moyenne DESC LIMIT '.$calcul);//on insere ds la nouvelle table les eleves du 1° quart qui sont admis d'office
+						RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI ORDER BY Moyenne DESC LIMIT '.$calcul);//on insere ds la nouvelle table les eleves du 1° quart qui sont admis d'office
 	$req->execute();
 	echo 'SelectionneFI VIEW CREATE';
 
 }
+//eleveSelectionner($bd);
 
 //Génére les differentes tables et vues pour le traitement des élèves
 function eleveATraiter($bd)
@@ -490,12 +499,15 @@ function eleveATraiter($bd)
 	 $calcul = $rep[0]/4;
 	 $req = $bd->prepare('CREATE TABLE IF NOT EXISTS AtraiterFA  
 	 					  AS SELECT  
-	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA 
+	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA 
 	 					  ORDER BY Moyenne DESC LIMIT :limite, :offset');
 
 	 $req->bindValue(':limite', $calcul, PDO::PARAM_INT);
 	 $calcul = $calcul*3;
 	 $req->bindValue(':offset', $calcul, PDO::PARAM_INT);
+	 $req->execute();
+
+	 $req = $bd->prepare('ALTER TABLE AtraiterFA ADD PRIMARY KEY (Numero)');
 	 $req->execute();
 	  echo 'AtraiterFA TABLE CREATE';
 	
@@ -512,28 +524,45 @@ function eleveATraiter($bd)
 
 	$req = $bd->prepare('CREATE TABLE IF NOT EXISTS AtraiterFI  
 	 					  AS SELECT  
-	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI 
+	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI 
 	 					  ORDER BY Moyenne DESC LIMIT :limite, :offset');
 
 	 $req->bindValue(':limite', $calcul, PDO::PARAM_INT);
 	 $calcul = $calcul*3;
 	 $req->bindValue(':offset', $calcul, PDO::PARAM_INT);
 	 $req->execute();
+
+	 $req = $bd->prepare('ALTER TABLE AtraiterFI ADD PRIMARY KEY (Numero)');
+	 $req->execute();
 	 echo 'AtraiterFI TABLE CREATE';
 	
 }
+//eleveATraiter($bd);
 
 //On créer une vue pour les élèves qui ont postulé dans les deux filieres (438)
 function elevePostuleFAFI($bd)
 {
-	$req = $bd->prepare('CREATE VIEW EtudiantFIFA (Numero, Nom, Prénom, Moyenne, InfosDiplôme, NombreDeBonusMalusAppliqués, AvisDuCE) 
-						AS SELECT EtudiantFI.Numero, EtudiantFI.Nom, EtudiantFI.Prénom, EtudiantFI.Moyenne, EtudiantFI.InfosDiplôme, EtudiantFI.NombreDeBonusMalusAppliqués, EtudiantFI.AvisDuCE
+	$req = $bd->prepare('CREATE VIEW EtudiantFIFA (Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE) 
+						AS SELECT EtudiantFI.Numero, EtudiantFI.Nom, EtudiantFI.Prénom, EtudiantFI.Moyenne, EtudiantFI.InfosDiplôme, EtudiantFI.Spécialité, EtudiantFI.NombreDeBonusMalusAppliqués, EtudiantFI.AvisDuCE
 						FROM EtudiantFI, EtudiantFA
 						WHERE EtudiantFI.Numero = EtudiantFA.Numero
 						ORDER BY Moyenne DESC');
 	$req->execute();
 }
+//elevePostuleFAFI($bd);
 
+function supprimerNULL($bd){
+
+	$req = $bd->prepare("DELETE FROM AtraiterFA WHERE Moyenne IS NULL");
+
+	$req->execute();
+
+	$req = $bd->prepare("DELETE FROM AtraiterFI WHERE Moyenne IS NULL");
+
+	$req->execute();
+
+}
+//supprimerNULL($bd);
 
 function bonusMalusTotal($bd, $ine, $bn) //applique les bonus/malus aux eleves ON A BESOIN DU FORMULAIRE BORDEL DE MERDE!!!!!!
 {
