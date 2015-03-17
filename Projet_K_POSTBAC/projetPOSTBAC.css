@@ -5,11 +5,9 @@ body
 }
 h1
 {
-  color : #009ae1;
-  font-size : 3.5em;
-  margin-left: auto;
-  margin-right: auto;
-  width: 60%;
+ font-size : 2em;	
+ color : #009ae1;
+  
   
 }
 h2{
@@ -61,8 +59,7 @@ section.idForm
 
 #textAccueil 
 {
-	margin-left: 19%;
-	margin-top: 5%;
+	
 	width: 54%;
 	padding: 1em;
 	border: 1px #009ae1 solid;

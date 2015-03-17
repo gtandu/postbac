@@ -31,9 +31,8 @@
   display: none;
 }
 #cssmenu {
-  margin-left: auto;
-  margin-right: auto;
-  width: 60%;
+ 
+  width: 55%;
   text-align: center;
   font-family: 'Open Sans', sans-serif;
   line-height: 1;
