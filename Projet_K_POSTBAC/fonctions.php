@@ -515,7 +515,12 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
 
 
-		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57% id=trier;">
+		
+
+
+		if ($f == 'fi')
+		{	
+			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr >
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
@@ -527,13 +532,6 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>AvisCE</th>
 			<th>Selectionner</th>
 			</tr> ';
-
-
-		if ($f == 'fi')
-		{	
-			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
-			<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 			<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Selectionner</th></tr> ';
 
 			$req = $bd->prepare('select * from AtraiterFI');
 			$req->execute();
@@ -550,9 +548,19 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		}
 		else
 		{
-			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">
-			<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 			<tr><th>Nom</th><th>Prénom</th><th>Numero</th><th>Bac</th><th>Moyenne</th><th>BonusMalus</th><th>AvisCE</th><th>Postule en Initiale</th><th>Selectionner</th></tr> ';
+			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
+		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
+ 		<tr >
+			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>Numero</th>
+			<th><div class=arrow2>Bac</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th style = width:9%;><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>BonusMalus</th>
+			<th>AvisCE</th>
+			<th>Postule en Initiale</th>
+			<th>Selectionner</th>
+			</tr> ';
 
 			$req = $bd->prepare('select * from AtraiterFA');
 			$req->execute();
