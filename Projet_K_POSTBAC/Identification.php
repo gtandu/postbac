@@ -7,9 +7,9 @@
 		
 ?>
 
-	
+	<br><br>
 	<center><h1> Bienvenue sur le portail d'Admission PostBac </h1></center>
-	
+	<br><br>
 	
 <?php
 
@@ -51,10 +51,10 @@
 
  <!------------------Formulaire d'identification---------------->
 
-	<div style=" margin-left:auto; margin-right:auto; width:50%;">
+	<div style="width:90%;">
 		
-  		<form action="identification.php" method="post" class="pure-form pure-form-aligned">
-	    <fieldset>
+  		<center><form action="identification.php" method="post" class="pure-form pure-form-aligned">
+	    
 	        <div class="pure-control-group">
 	            <label for="name">Identifiant</label>
 	            <input name="name" type="text" placeholder="Identifiant">
@@ -67,18 +67,18 @@
 	      
 	        <p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msg; ?></p>
 
-	        <div class="pure-controls" style="margin-left:auto; margin-right:auto; width:55%;">
+	        <div class="pure-controls" style="margin-left: auto; margin-right: auto; width:30%;">
 	            
 
-	            <a style="padding-left:0.5em;" href="mdpOublier.php">Mot de passe oublié ?</a> <br><br>
+	            <a href="mdpOublier.php">Mot de passe oublié ?</a> <br><br>
 
 	            <button type="submit" class="pure-button pure-input-1-2 pure-button-primary">Me Connecter</button>
 	        </div>
 
 	        
 
-	    </fieldset>
-	</form>
+	  
+	</form></center>
 	</div>
 	</section>
 	

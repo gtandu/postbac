@@ -25,7 +25,7 @@
 
 	}
 ?>
-<p id='textAccueil'> <strong>Veuillez selectionner l'enseignant qui se chargera des canditats suivant : </strong></p> 
+<center><p id='textAccueil'> <strong>Veuillez selectionner l'enseignant qui se chargera des canditats suivant : </strong></p></center> 
 
 <FORM style="margin-left:auto; margin-right:auto; width:15%;">
 <SELECT name="prof" size="1">
@@ -44,6 +44,8 @@ while($tmp1=$req->fetch(PDO::FETCH_ASSOC)){
 	echo 	"<OPTION>".$tmp1['nom']." ".$tmp1['prenom'];
 
 }
+
+
 
 
 ?>

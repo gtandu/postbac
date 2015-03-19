@@ -1,7 +1,6 @@
 <?php
-
+//header ('Content-type: text/html; charset=UTF-8');
 require('connexion.php'); //Permet la connexion à la base de données
-header ('Content-type: text/html; charset=UTF-8');
 ini_set('display_errors', 1); 
 error_reporting(E_ALL); //Affiche toutes les erreurs
 
