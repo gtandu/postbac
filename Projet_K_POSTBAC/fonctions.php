@@ -166,14 +166,15 @@ function insert($bd, $nomTable, $array_file){
 //Creation de la table des enseignants 
 function createTableID($bd){
 
-	$req=$bd->prepare(' CREATE TABLE IF NOT EXISTS  identification  (
+$req=$bd->prepare(' CREATE TABLE IF NOT EXISTS  identification  (
  `login` VARCHAR( 50 ) NOT NULL ,
  `nom` VARCHAR( 50 ) NOT NULL ,
  `prenom` VARCHAR( 50 ) NOT NULL ,
-  `email` VARCHAR( 50 ) NOT NULL ,
-  `mdp` VARCHAR( 50 ) NOT NULL ,
+ `email` VARCHAR( 50 ) NOT NULL ,
+ `mdp` VARCHAR( 50 ) NOT NULL ,
  `matiere` VARCHAR( 50 ) NOT NULL ,
  `admin` INTEGER NOT NULL,
+ `cle` VARCHAR ( 32 ),
   PRIMARY KEY (login))');
 	$req->execute();
 }
