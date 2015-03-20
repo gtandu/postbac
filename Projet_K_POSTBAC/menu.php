@@ -21,7 +21,7 @@
 	<li><a href='profil.php'>Mon Profil</a></li>
 	<li ><a href='contenu.php'>Espace Enseignants</a></li>
 	<li><a href='liste.php'>Listes Etudiants</a></li>
-	<li><a href='dossierATraiter.php'>Dossier à Traiter</a></li>
+	<li><a href='dossiers.php'>Dossier à Traiter</a></li>
 	<li><a href='deconnexion.php'>Déconnexion</a></li>
 </ul>
 </div></center>
