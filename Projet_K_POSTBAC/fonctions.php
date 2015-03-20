@@ -785,11 +785,11 @@ function elevePostuleFAFI($bd)
 
 function supprimerNULL($bd){
 
-	$req = $bd->prepare("DELETE FROM AtraiterFA WHERE Moyenne IS NULL");
+	$req = $bd->prepare("DELETE FROM EtudiantFA WHERE Moyenne IS NULL OR Moyenne=0");
 
 	$req->execute();
 
-	$req = $bd->prepare("DELETE FROM AtraiterFI WHERE Moyenne IS NULL");
+	$req = $bd->prepare("DELETE FROM EtudiantFI WHERE Moyenne IS NULL OR Moyenne=0");
 
 	$req->execute();
 
