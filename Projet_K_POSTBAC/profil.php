@@ -8,11 +8,22 @@
 	
 ?>
 // A Faire le CSS et modif avec le bouton enregistrer
-
 <?php
+$msg="";
+if(!empty($_POST)){
+	$msg=majMdpEnseignant($bd);
+}
+
+
+
+
+?>
+<?php
+	
+	
 	$req=$bd -> prepare('SELECT * FROM identification');
 	$req->execute();
-
+	
 
 	while($rep = $req->fetch(PDO::FETCH_ASSOC))
 	{
@@ -24,6 +35,8 @@
 		
 		
 	}
+	
+	
 ?>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
@@ -53,6 +66,7 @@
             <label for="mdp_actuel">Mot de passe actuel</label>
             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 			<input id="mdp_actuel" class="form-control" type="password" placeholder="Mot de passe actuel" name ="mdp_actuel">
+			<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msg; ?></p>
 		</p>
 		<p>
 			<label for="mdp_new">Nouveau mot de passe</label>
@@ -66,7 +80,7 @@
 			<span id="erreur-confirm" class="erreur">Différents !</span>
         </p>
 		
-		<div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button></div>
+		<div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary" id="enregitrermdp">Enregistrer</button></div>
 		
 		<br/>
 		
