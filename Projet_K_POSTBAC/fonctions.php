@@ -209,6 +209,7 @@ function generer_mot_de_passe($nb_caractere)
         return $mot_de_passe;   
 }
 
+// Fonction qui genere un login en fonction du nom et du prenom et evite les doublons a la creation
 function generer_login($bd, $nom, $prenom)
 {
 	$login="";
@@ -266,7 +267,7 @@ function insertDataEnseignants($bd){
 
 		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
 		$derniercaractere = substr($login,-1);
-        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0)';
+        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0,0)';
         $req=$bd->prepare($query);
         $req->bindValue('login', $login);
         $req->bindValue(':nom', $_GET['nom']);
@@ -279,7 +280,7 @@ function insertDataEnseignants($bd){
        
         if($req->execute())
         {
-        	//mail( $_GET['email'], 'Identifiant et Mot de passe PostBac', 'le message', null, 'karine.ouldbraham@gmail.com');
+        	mail( $_GET['email'], 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
         	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_GET['nom'] .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div></center>';
         };
     }
@@ -310,28 +311,83 @@ function modifDataEnseignants($bd){
 }
 
 
+// Met a jour le mot de passe d'un enseignant sur sa page de profil
 function majMdpEnseignant($bd){
-	// A finir
-	echo "TEST";
-	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['mdp_new']) && trim($_POST['mdp_new']!=NULL))
+	
+	if(isset($_POST['mdp_actif'])&& trim($_POST['mdp_actif']!=NULL) && isset($_POST['new_mdp']) && trim($_POST['new_mdp']!=NULL))
 	{
-		echo "TEST1";
-		$query='UPDATE identification SET mdp = :mdp_new WHERE login = :login and mdp = :mdp_actuel';
+		$query='UPDATE identification SET mdp =:new_mdp WHERE login =:login and mdp = :mdp_actif';
+		
 		$req=$bd->prepare($query);
 		$req->bindValue('login',$_SESSION['name']);
-		$req->bindValue('mdp_actuel',$_POST['mdp_actuel']);
-		$req->bindValue('mdp_new', $_POST['mdp_new']);
+		$req->bindValue('mdp_actif',$_POST['mdp_actif']);
+		$req->bindValue('new_mdp',$_POST['new_mdp']);
 		$req->execute();
 		
-		return $msg="Mot de passe changé !";
-	}
-	
-	return $msg="Erreur mot de passe actuel";
+		if($req->rowCount()==1)
+		{
+			return $msg="Mot de passe changé !";
+		}
+		
+		else
+		{
+			return $msg="Erreur mot de passe actuel";
+		}
+		
+	}		
 }
 
 function MajEmailEnseignant($bd){
 	
-	
+	if(isset($_POST['adresse_mail_actif'])&& trim($_POST['adresse_mail_actif']!=NULL) && isset($_POST['mdp_actif']) && trim($_POST['mdp_actif']!=NULL) && isset($_POST['new_adresse_mail']) && trim($_POST['new_adresse_mail']!=NULL) )
+	{
+		$query='Select login from identification WHERE login =:login and mdp = :mdp_actif and email= :mail_actif';
+		
+		$req=$bd->prepare($query);
+		$req->bindValue('login',$_SESSION['name']);
+		$req->bindValue('mdp_actif',$_POST['mdp_actif']);
+		$req->bindValue('mail_actif', $_POST['adresse_mail_actif']);
+		$req->execute();
+		
+		if($req->rowCount()==1)
+		{
+			$cle = md5(microtime(TRUE)*100000);
+			
+			// Insertion de la clé dans la base de données (à adapter en INSERT si besoin)
+			$req = $bd->prepare("UPDATE identification SET cle = :cle where login = :login ");
+			$req->bindParam(':cle', $cle);
+			$req->bindParam(':login', $_SESSION['name']);
+			$req->execute();
+			
+			// Préparation du mail contenant le lien d'activation
+			$login = $_SESSION['name'];
+			$destinataire = $_POST['new_adresse_mail'];
+			$sujet = "Activer votre compte" ;
+			$entete = "From: changementemail@postbac.com" ;
+			 
+			// Le lien d'activation est composé du login(log), de la clé(cle) et du mail
+			// Adresse d'activation a adapter !
+			$message = "Bienvenue sur Postbac,
+			 
+			Pour confirmer le changement de votre adresse mail, veuillez cliquer sur le lien ci dessous ou copier/coller dans votre navigateur internet.
+			
+			http://localhost/postbac/Projet_K_POSTBAC/validationMail.php?log=$login&mail=$destinataire&cle=$cle
+			 
+			 
+			---------------
+			Ceci est un mail automatique, Merci de ne pas y répondre.";
+ 
+			mail($destinataire, $sujet, $message, $entete) ; // Envoi du mail
+			
+			return $msg="Mail de confirmation envoyé a votre nouvelle adresse!";
+		}
+		
+		else
+		{
+			return $msg="Erreur mot de passe actuel";
+		}
+		
+	}		
 
 }
 

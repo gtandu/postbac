@@ -24,7 +24,7 @@
   //------------------------Vérification des identifiants et mots de passes lors de la connection-------------//
 
  if(!empty($_POST))
- b{		
+	 
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
 			//print_r($_POST);
@@ -43,7 +43,6 @@
 			}
 			
 		}	
-	}
 	
 
 

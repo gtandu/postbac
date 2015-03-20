@@ -2,6 +2,7 @@ console.log("Ce programme JS vient d'être chargé");
 $(document).ready(function()
 {
 	$('#erreur-confirm').hide();
+	$('#erreur-mdp').hide();
 	console.log("Le document est prêt");
 	
 		$('#mdp_new').keyup(function(event)

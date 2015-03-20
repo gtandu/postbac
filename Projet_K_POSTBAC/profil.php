@@ -7,11 +7,19 @@
 		require('menu.php'); 
 	
 ?>
-// A Faire le CSS et modif avec le bouton enregistrer
+
 <?php
 $msg="";
-if(!empty($_POST)){
+$msgE="";
+
+if(!empty($_POST['new_mdp']))
+{
 	$msg=majMdpEnseignant($bd);
+}
+
+if(!empty($_POST['new_adresse_mail']))
+{
+	$msgE=majEmailEnseignant($bd);
 }
 
 
@@ -41,6 +49,7 @@ if(!empty($_POST)){
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="profil.js"></script>
+
 <form method="post" class="pure-form pure-form-aligned" action="profil.php">
     <fieldset><center>
         <div class="pure-control-group">
@@ -49,11 +58,13 @@ if(!empty($_POST)){
 				echo $_SESSION['name']; // On affiche le nom du prof qui a sa session d'active
 			?>
         </div>
+		
 		<br/>
+		
 		<div class="pure-control-group">
             <label for="matiere">Matière :</label>
 			<?php
-				echo $matiere; // On affiche la matiere que du prof
+				echo $matiere; // On affiche la matiere du prof
 			?> 
         </div>
 		
@@ -65,14 +76,17 @@ if(!empty($_POST)){
 		<p>
             <label for="mdp_actuel">Mot de passe actuel</label>
             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input id="mdp_actuel" class="form-control" type="password" placeholder="Mot de passe actuel" name ="mdp_actuel">
+			<input id="mdp_actuel" class="form-control" type="password" placeholder="Mot de passe actuel" name ="mdp_actif">
 			<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msg; ?></p>
 		</p>
+		
 		<p>
 			<label for="mdp_new">Nouveau mot de passe</label>
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input id="mdp_new" class="form-control" type="password" placeholder="Nouveau mot de passe" name ="mdp_new">
+			<input id="mdp_new" class="form-control" type="password" placeholder="Nouveau mot de passe" name ="new_mdp">
+			<span id="erreur-mdp" class="erreur">Trop court !</span>
 		</p>
+		
 		<p>
 			<label for="mdp_confirm">Retappez mot de passe</label>
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
@@ -86,16 +100,24 @@ if(!empty($_POST)){
 		
 		<span> Changer d'adresse mail <span>
 			<p>
-				<label for="email">Email </label>
+				<label for="email">Email actuel </label>
 				<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
-				<input class="form-control" type="email" placeholder="Adresse Email" name="adresse_mail" value="<?php echo $mail?>">
+				<input class="form-control" type="email" placeholder="Adresse Email Actuel" name="adresse_mail_actif" value="<?php echo $mail?>">
+				
+			</p>
+			
+			<p>
+				<label for="email">Nouvelle Email </label>
+				<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
+				<input class="form-control" type="email" placeholder="Nouvelle Adresse Email" name="new_adresse_mail">
 				
 			</p>
 			
 			<p>
 				<label for="mdp_actuel">Mot de passe</label>
 				<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-				<input class="form-control" type="password" placeholder="Mot de passe" name ="mdp_actuel">
+				<input class="form-control" type="password" placeholder="Mot de passe" name ="mdp_actif">
+				<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msgE; ?></p>
 			</p>
 		</div>
 
