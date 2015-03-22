@@ -286,6 +286,7 @@ function insertDataEnseignants($bd){
 }
 
 function majMdpEnseignant($bd){
+	// A finir
 	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['mdp_new']) && trim($_POST['mdp_new']!=NULL))
 	{
 		$query='UPDATE identification SET mdp = :mdp_new WHERE login = :login and mdp = :mdp_actuel';
