@@ -177,7 +177,7 @@ function createTableID($bd){
   PRIMARY KEY (login))');
 	$req->execute();
 }
-createTableID($bd);
+//createTableID($bd);
 //Nombre d'enseignant enregister dans la base 
 function nbEnseignant($bd){
 	
@@ -280,7 +280,7 @@ function insertDataEnseignants($bd){
         if($req->execute())
         {
         	//mail( $_GET['email'], 'Identifiant et Mot de passe PostBac', 'le message', null, 'karine.ouldbraham@gmail.com');
-        	echo '<div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_GET['nom'] .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div>';
+        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_GET['nom'] .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div></center>';
         };
     }
 }
@@ -344,11 +344,11 @@ function afficheProf($bd){
 			{
 				echo '
 				<tr>
-				<td style="text-align:center;">'.$tmp1['nom'].'</td>
+				<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
 				<td style="text-align:center;">'.$tmp1['prenom'].'</td>
 				<td style="text-align:center;">'.$tmp1['matiere'].'</td>
-				<td style="text-align:center;"><a href="modifProf.php"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
-				<td style="text-align:center;"><a href="supprimeProf.php"><i style="padding-left:2em;" class="fa fa-trash-o"></i></a></td>
+				<td style="text-align:center;"><a href="modifProf.php class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
+				<td style="text-align:center;"><img src="effacer.png" class="supprimer"></td>
 				</tr>';
 
 			}
