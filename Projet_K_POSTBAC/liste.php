@@ -107,7 +107,7 @@ elseif ($_SERVER["REQUEST_METHOD"] == "GET" && isset($_GET['fa'])){
 
 }
 
-print_r($_GET);
+// print_r($_GET);
 
 
 ?>

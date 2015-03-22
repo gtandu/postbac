@@ -12,7 +12,6 @@
 
 
 
-<!--<h2>Formulaire d'ajout d'enseignants</h2>-->
 <br>
 <center><p id='textAccueil'> <strong>Cet espace permet la gestion des différents enseignants qui traiteront les dossiers des candidats</strong></p></center> 
 
@@ -29,33 +28,6 @@ if ($_SESSION['admin']==1){
 }
 
 ?>
-<!--
-<script language="Javascript">
-
-console.log("Ce programme JS vient d'être chargé");
-$(document).ready(function()
-{
-	console.log("Le document est pret");
-		
-	 $('.supprimer').click(function(event)
-	 {
-
-	 	console.log('Le bouton supprimer a été cliqué !');
-		$(this).parent().parent().addClass("delete");
-		//console.log($(this).parent().parent());
-
-		if ($('tr').hasClass('delete')){
-
-			$('.delete').remove();
-		}
-
-	 });
-	
-	 
-});
-
-</script>
--->
 
 <?php
 //----------------------------Pour supprimer un enseignant---------------------//

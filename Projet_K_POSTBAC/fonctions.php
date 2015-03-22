@@ -8,10 +8,6 @@ error_reporting(E_ALL); //Affiche toutes les erreurs
 
 
 
-
-
-
-
 //---------------------------------------------------------------------------------//
 //       Fonction pour l'intégration du fichier excel (converti en CSV)            //
 //---------------------------------------------------------------------------------//											
@@ -167,14 +163,15 @@ function insert($bd, $nomTable, $array_file){
 function createTableID($bd){
 
 	$req=$bd->prepare(' CREATE TABLE IF NOT EXISTS  identification  (
- `login` VARCHAR( 50 ) NOT NULL ,
- `nom` VARCHAR( 50 ) NOT NULL ,
- `prenom` VARCHAR( 50 ) NOT NULL ,
-  `email` VARCHAR( 50 ) NOT NULL ,
-  `mdp` VARCHAR( 50 ) NOT NULL ,
- `matiere` VARCHAR( 50 ) NOT NULL ,
- `admin` INTEGER NOT NULL,
-  PRIMARY KEY (login))');
+ 	`login` VARCHAR( 50 ) NOT NULL ,
+ 	`nom` VARCHAR( 50 ) NOT NULL ,
+ 	`prenom` VARCHAR( 50 ) NOT NULL ,
+ 	`email` VARCHAR( 50 ) NOT NULL ,
+ 	`mdp` VARCHAR( 50 ) NOT NULL ,
+ 	`matiere` VARCHAR( 50 ) NOT NULL ,
+ 	`admin` INTEGER NOT NULL,
+ 	`cle` VARCHAR ( 32 ),
+ 	PRIMARY KEY (login))');
 	$req->execute();
 }
 //createTableID($bd);
@@ -209,6 +206,7 @@ function generer_mot_de_passe($nb_caractere)
         return $mot_de_passe;   
 }
 
+// Fonction qui genere un login en fonction du nom et du prenom et evite les doublons a la creation
 function generer_login($bd, $nom, $prenom)
 {
 	$login="";
@@ -266,7 +264,7 @@ function insertDataEnseignants($bd){
 
 		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
 		$derniercaractere = substr($login,-1);
-        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0)';
+        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0,0)';
         $req=$bd->prepare($query);
         $req->bindValue('login', $login);
         $req->bindValue(':nom', $_GET['nom']);
@@ -279,14 +277,14 @@ function insertDataEnseignants($bd){
        
         if($req->execute())
         {
-        	//mail( $_GET['email'], 'Identifiant et Mot de passe PostBac', 'le message', null, 'karine.ouldbraham@gmail.com');
+        	mail( $_GET['email'], 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
         	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_GET['nom'] .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div></center>';
         };
     }
 }
-
+ 
 function modifDataEnseignants($bd){
-//Modification des données de l'enseigant à partir du forumulaire modifProf
+//Modification des données de l'enseigant à partir du formulaire modifProf
 	
     if(isset($_POST['nom']) && trim($_POST['nom']!=NULL) && isset($_POST['prenom']) && trim($_POST['prenom']!=NULL) && isset($_POST['matiere']) && trim($_POST['matiere']!=NULL) && isset($_POST['email']) && trim($_POST['email']))
     {
@@ -310,21 +308,83 @@ function modifDataEnseignants($bd){
 }
 
 
+// Met a jour le mot de passe d'un enseignant sur sa page de profil
 function majMdpEnseignant($bd){
-	// A finir
-	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['mdp_new']) && trim($_POST['mdp_new']!=NULL))
+	
+	if(isset($_POST['mdp_actif'])&& trim($_POST['mdp_actif']!=NULL) && isset($_POST['new_mdp']) && trim($_POST['new_mdp']!=NULL))
 	{
-		$query='UPDATE identification SET mdp = :mdp_new WHERE login = :login and mdp = :mdp_actuel';
+		$query='UPDATE identification SET mdp =:new_mdp WHERE login =:login and mdp = :mdp_actif';
+		
 		$req=$bd->prepare($query);
 		$req->bindValue('login',$_SESSION['name']);
-		$req->bindValue('mdp_actuel',$_POST['mdp_actuel']);
-		$req->bindValue('mdp_new', $_POST['mdp_new']);
-	}
+		$req->bindValue('mdp_actif',$_POST['mdp_actif']);
+		$req->bindValue('new_mdp',$_POST['new_mdp']);
+		$req->execute();
+		
+		if($req->rowCount()==1)
+		{
+			return $msg="Mot de passe changé !";
+		}
+		
+		else
+		{
+			return $msg="Erreur mot de passe actuel";
+		}
+		
+	}		
 }
 
 function MajEmailEnseignant($bd){
 	
-	
+	if(isset($_POST['adresse_mail_actif'])&& trim($_POST['adresse_mail_actif']!=NULL) && isset($_POST['mdp_actif']) && trim($_POST['mdp_actif']!=NULL) && isset($_POST['new_adresse_mail']) && trim($_POST['new_adresse_mail']!=NULL) )
+	{
+		$query='Select login from identification WHERE login =:login and mdp = :mdp_actif and email= :mail_actif';
+		
+		$req=$bd->prepare($query);
+		$req->bindValue('login',$_SESSION['name']);
+		$req->bindValue('mdp_actif',$_POST['mdp_actif']);
+		$req->bindValue('mail_actif', $_POST['adresse_mail_actif']);
+		$req->execute();
+		
+		if($req->rowCount()==1)
+		{
+			$cle = md5(microtime(TRUE)*100000);
+			
+			// Insertion de la clé dans la base de données (à adapter en INSERT si besoin)
+			$req = $bd->prepare("UPDATE identification SET cle = :cle where login = :login ");
+			$req->bindParam(':cle', $cle);
+			$req->bindParam(':login', $_SESSION['name']);
+			$req->execute();
+			
+			// Préparation du mail contenant le lien d'activation
+			$login = $_SESSION['name'];
+			$destinataire = $_POST['new_adresse_mail'];
+			$sujet = "Activer votre compte" ;
+			$entete = "From: changementemail@postbac.com" ;
+			 
+			// Le lien d'activation est composé du login(log), de la clé(cle) et du mail
+			// Adresse d'activation a adapter !
+			$message = "Bienvenue sur Postbac,
+			 
+			Pour confirmer le changement de votre adresse mail, veuillez cliquer sur le lien ci dessous ou copier/coller dans votre navigateur internet.
+			
+			http://localhost/postbac/Projet_K_POSTBAC/validationMail.php?log=$login&mail=$destinataire&cle=$cle
+			 
+			 
+			---------------
+			Ceci est un mail automatique, Merci de ne pas y répondre.";
+ 
+			mail($destinataire, $sujet, $message, $entete) ; // Envoi du mail
+			
+			return $msg="Mail de confirmation envoyé a votre nouvelle adresse!";
+		}
+		
+		else
+		{
+			return $msg="Erreur mot de passe actuel";
+		}
+		
+	}		
 
 }
 
@@ -341,20 +401,24 @@ function afficheProf($bd){
 		echo '
 		<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
 		<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
-		<tr class="pure-table-odd">
+		<tr class="pure-table-odd" style= "background-color:#F0F0F0;">
 		<th>Nom</th>
 		<th>Prénom</th>
 		<th>Matière</th>
+		<th>Candidats attribués</th>
 		<th>Modifier</th>
 		<th>Supprimer</th>
 		</tr>';
 
 		while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
 		{
+			// on compte le nombre de candidats correspondant à l'enseignant
+			$nbCandidats=countCandidatProf($bd, $tmp1['login']);
 			echo '<tr>
 			<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
 			<td style="text-align:center;">'.$tmp1['prenom'].'</td>
 			<td style="text-align:center;">'.$tmp1['matiere'].'</td>
+			<td style="text-align:center;">'.$nbCandidats.'</td>
 			<td style="text-align:center;"><form method="post" action="modifProf.php"><INPUT type="image" src="modifier.png" >
 				<input type="hidden" name="modif" value="'.$tmp1['login'].'"/></form></td>
 			<td style="text-align:center;"><form method="post" action="contenu.php"><INPUT type="image" src="effacer.png" >
@@ -369,19 +433,23 @@ function afficheProf($bd){
 		echo '
 		<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
 		<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
-		<tr class="pure-table-odd">
+		<tr class="pure-table-odd" style= "background-color:#F0F0F0;">
 		<th>Nom</th>
 		<th>Prénom</th>
 		<th>Matière</th>
+		<th>Candidats attribués</th>
 		</tr>';
 
 		while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
 		{
+			// on compte le nombre de candidats correspondant à l'enseignant
+			$nbCandidats=countCandidatProf($bd, $tmp1['login']);
 			echo '
 			<tr>
-			<td style="text-align:center;">'.$tmp1['nom'].'</td> // id
+			<td style="text-align:center;">'.$tmp1['nom'].'</td>
 			<td style="text-align:center;">'.$tmp1['prenom'].'</td>
 			<td style="text-align:center;">'.$tmp1['matiere'].'</td>
+			<td style="text-align:center;">'.$nbCandidats.'</td>
 			</tr>';
 		}
 		echo '</table>';
@@ -399,9 +467,33 @@ function supprimeProf($bd, $loginProf){
 }
 //supprimeProf($bd, "GTandu2");
 
+// fonction qui renvoie le nombre de candidats attribué à un enseignant donnée ($prof)
+function countCandidatProf($bd, $prof){
+
+	$query="SELECT count(*) FROM EtudiantFI WHERE enseignant =  :prof";
+	$req=$bd->prepare($query);
+	$req->bindValue('prof',$prof);
+	$req->execute();
+	$rep = $req->fetch(PDO::FETCH_ASSOC);
+
+	// print_r($rep);
+
+	$query2="SELECT count(*) FROM EtudiantFA WHERE enseignant =  :prof";
+	$req2=$bd->prepare($query2);
+	$req2->bindValue('prof',$prof);
+	$req2->execute();
+	$rep2 = $req2->fetch(PDO::FETCH_ASSOC);
+
+	// print_r($rep2);
+
+	return $rep['count(*)']+$rep2['count(*)'];
+
+}
+// $test=countCandidatProf($bd, 'KOuld');
+
 
 //----------------------------------------------------------------------------------//
-//       Fonction pour la gestion et l'affichage des étudiants                          //
+//       Fonction pour la gestion et l'affichage des étudiants                     //
 //--------------------------------------------------------------------------------//
 
 //fonction qui retourne True si l'étudiant ($num) a postulé dans les deux filière
@@ -522,7 +614,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		{	
 			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 		<tr >
+ 		<tr style="background-color:#F0F0F0;">
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th>Numero</th>
@@ -531,7 +623,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>BonusMalus</th>
 			<th>AvisCE</th>
 			<th>Selectionner</th>
-			</tr> ';
+		</tr> ';
 
 			$req = $bd->prepare('select * from AtraiterFI');
 			$req->execute();
@@ -550,7 +642,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		{
 			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 		<tr >
+ 		<tr style="background-color:#F0F0F0;">
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th>Numero</th>
@@ -594,14 +686,14 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 	}
 	else{
 
-		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57% id=trier;">
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
- 		<tr >
+ 		<tr style="background-color:#F0F0F0;">
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th>Numero</th>
 			<th><div class=arrow2>Bac</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
-			<th><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th style = width:10%;><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th>BonusMalus</th>
 			<th>AvisCE</th>
 			</tr> ';
@@ -630,6 +722,86 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 	}
 
 }
+
+//Fonction qui retourne tous les candidats ayant été attribuer a un enseignant donné en paramètre ($prof).
+function afficheCandidatDuProf($bd, $prof){
+
+	$query="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI WHERE enseignant =  :prof";
+	$req=$bd->prepare($query);
+	$req->bindValue('prof',$prof);
+	$req->execute();
+
+	$query2="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA WHERE enseignant =  :prof";
+	$req2=$bd->prepare($query2);
+	$req2->bindValue('prof',$prof);
+	$req2->execute();
+
+	if ($_SESSION['admin']==1)
+	{
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
+		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
+ 		<tr>
+			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>Numero</th>
+			<th><div class=arrow2>Bac</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th style = width:10%;><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>BonusMalus</th>
+			<th>AvisCE</th>
+			<th>Postule</th>
+		</tr> ';
+	
+
+		while($rep = $req->fetch(PDO::FETCH_ASSOC))
+		{
+			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td></tr>';
+		}
+
+		while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
+		{
+			echo '<tr><td>'.$rep2['Nom'].'</td><td>'.$rep2['Prénom'].'</td><td>'.$rep2['Numero'].'</td><td>'.$rep2['InfosDiplôme'].'</td>
+				<td>'.$rep2['Moyenne'].'</td><td>'.$rep2['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td></tr>';
+		}
+
+		echo "</table></center>";
+
+	}
+	else
+	{
+		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
+		<FORM method = "post" style="margin-left:auto; margin-right:auto; width:20%;" action="dossier.php">
+		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
+ 		<tr>
+			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>Numero</th>
+			<th><div class=arrow2>Bac</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th style = width:10%;><div class=arrow2>Moyenne</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
+			<th>Dossier</th>
+			<th>Lettre M.</th>
+			<th>Autre</th>
+			<th>AvisCE</th>
+			<th>Postule</th>
+		</tr> ';
+
+		while($rep = $req->fetch(PDO::FETCH_ASSOC))
+		{
+			echo '<tr><td><a href="URL demandé gerard">'.$rep['Nom'].'</a></td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+				<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td></tr>';
+		}
+
+		while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
+		{
+			echo '<tr><td><a href="URL demandé gerard">'.$rep2['Nom'].'</a></td><td>'.$rep2['Prénom'].'</td><td>'.$rep2['Numero'].'</td><td>'.$rep2['InfosDiplôme'].'</td>
+				<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td></tr>';
+		}
+
+		echo "</FORM></table></center>";
+	}
+
+}
+
 
 //----------------------------------------------------------------------------------//
 //       Fonction pour la créaction, la gestion et l'affichage des enseignants     //
@@ -796,7 +968,7 @@ function supprimerNULL($bd){
 }
 //supprimerNULL($bd);
 
-function bonusMalusTotal($bd, $ine, $bn) //applique les bonus/malus aux eleves ON A BESOIN DU FORMULAIRE BORDEL DE MERDE!!!!!!
+function bonusMalusTotal($bd, $ine, $bn) //applique les bonus/malus aux eleves ON A BESOIN DU FORMULAIRE BORDEL DE MERDE!!!!!! --> Je t'en pris fait le si s'est si urgent !!!!!!!
 {
 	$req = $bd->prepare('UPDATE m SET Moyenne = Moyenne+ :bn  WHERE Numero = :ine');//On icrémente la moyenne de l'eleve de la valeur de bn
 	$req->bindValue(':bn', $bn);
