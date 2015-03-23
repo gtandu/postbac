@@ -306,98 +306,75 @@ function MajEmailEnseignant($bd){
 // Récupération des enseignant dans la table et affichage du tableau 
 function afficheProf($bd){
 
-	$query="SELECT * FROM identification";
+	$query="SELECT * FROM identification WHERE admin=0";
 	$req=$bd->prepare($query);
 	$req->execute();
-
-	$rep = $req->fetch(PDO::FETCH_ASSOC);
 	
 	//Affiche le tableau des profs en fonction de si l'utilisateur est administrateur 
 	if ($_SESSION['admin']==1){
 
-		if (empty($rep))
+		echo '
+		<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
+		<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
+		<tr class="pure-table-odd">
+		<th>Nom</th>
+		<th>Prénom</th>
+		<th>Matière</th>
+		<th>Modifier</th>
+		<th>Supprimer</th>
+		</tr>';
+
+		while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
 		{
 			echo '
-			<table class="pure-table-horizontal" border="1" CELLPADDING="20" style="width: 57%;">
-			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
+			<form method="post" action="contenu.php">
 			<tr>
-			<th>Nom</th>
-			<th>Prénom</th>
-			<th>Matière</th>
-			</tr>';
+			<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
+			<td style="text-align:center;">'.$tmp1['prenom'].'</td>
+			<td style="text-align:center;">'.$tmp1['matiere'].'</td>
+			<td style="text-align:center;"><a href="modifProf.php class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
+			<td style="text-align:center;"><INPUT type="image" src="effacer.png" ></td>
+			</tr>
+			<input type="hidden" name="supProf" value="'.$tmp1['login'].'"/>
+			</form>';
+
 		}
-		else
-		{
-			$tmp= array_keys($rep);
-
-			echo '
-			<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
-			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
-			<tr class="pure-table-odd">
-			<th>Nom</th>
-			<th>Prénom</th>
-			<th>Matière</th>
-			<th>Modifier</th>
-			<th>Supprimer</th>
-			</tr>';
-
-			while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
-			{
-				echo '
-				<tr>
-				<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
-				<td style="text-align:center;">'.$tmp1['prenom'].'</td>
-				<td style="text-align:center;">'.$tmp1['matiere'].'</td>
-				<td style="text-align:center;"><a href="modifProf.php class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
-				<td style="text-align:center;"><img src="effacer.png" class="supprimer"></td>
-				</tr>';
-
-			}
-			echo '</table>';
-		}
-
+		echo '</table>';
 	}
 	else 
 	{
-		if (empty($rep))
+		echo '
+		<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
+		<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
+		<tr class="pure-table-odd">
+		<th>Nom</th>
+		<th>Prénom</th>
+		<th>Matière</th>
+		</tr>';
+
+		while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
 		{
 			echo '
-			<table class="pure-table-horizontal" border="1" CELLPADDING="20" style="width: 57%;">
-			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
 			<tr>
-			<th>Nom</th>
-			<th>Prénom</th>
-			<th>Matière</th>
+			<td style="text-align:center;">'.$tmp1['nom'].'</td> // id
+			<td style="text-align:center;">'.$tmp1['prenom'].'</td>
+			<td style="text-align:center;">'.$tmp1['matiere'].'</td>
 			</tr>';
 		}
-		else
-		{
-		
-			$tmp= array_keys($rep);
-
-			echo '
-			<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
-			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
-			<tr class="pure-table-odd">
-			<th>Nom</th>
-			<th>Prénom</th>
-			<th>Matière</th>
-			</tr>';
-
-			while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
-			{
-
-				echo '
-				<tr>
-				<td style="text-align:center;">'.$tmp1['nom'].'</td> // id
-				<td style="text-align:center;">'.$tmp1['prenom'].'</td>
-				<td style="text-align:center;">'.$tmp1['matiere'].'</td>
-				</tr>';
-			}
-			echo '</table>';
-		}
+		echo '</table>';
 	}
 }
+
+//Fonction qui supprime un enseignant dont le login est passé en paramètre
+function supprimeProf($bd, $loginProf){
+
+	$query="DELETE FROM identification WHERE login=:login ";
+	$req=$bd->prepare($query);
+	$req->bindValue('login',$loginProf);
+	$req->execute();
+
+}
+//supprimeProf($bd, "GTandu2");
 
 function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons Alternance/initiale au-dessus de la liste )
 {							 // avec une checkbox avec comme valeur le num de l'eleve

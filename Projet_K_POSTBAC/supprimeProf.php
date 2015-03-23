@@ -4,4 +4,3 @@
 	require_once('menu.php');
 	require('fonctions.php'); //Ensemble de fonctions php
 ?>
-

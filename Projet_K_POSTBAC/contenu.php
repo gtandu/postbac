@@ -29,6 +29,7 @@ if ($_SESSION['admin']==1){
 }
 
 ?>
+<!--
 <script language="Javascript">
 
 console.log("Ce programme JS vient d'être chargé");
@@ -54,9 +55,50 @@ $(document).ready(function()
 });
 
 </script>
-
+-->
 
 <?php
+//----------------------------Pour supprimer un enseignant---------------------//
+
+//on récupere tous les enseignants de la table 
+$query="SELECT * FROM identification";
+$req=$bd->prepare($query);
+$req->execute();
+
+//Pour chaque enseignants
+while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
+{
+
+//On test quel est celui qui a été selectionné pour la suppression
+if (isset($_POST['supProf']) && $_POST['supProf']==$tmp1['login'])
+	{
+
+	//Affichage d'une confirmation pour la suppression
+	echo '<center><p style="color: red;">Etes-vous sures de vouloir supprimer "'.$tmp1['nom'].' '.$tmp1['prenom'].'" de la base de données des enseignants ?</p></center>';
+	echo '<center>
+	<form method="post" action="contenu.php">
+	<input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="delete" value="oui">
+	<input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="delete" value="non">
+	<input type="hidden" name="login" value="'.$tmp1['login'].'"/> 
+	</form>
+	</center>';
+
+	}
+}
+
+//si confirmation accepté 
+if (isset($_POST['delete']) && $_POST['delete']=='oui')
+{
+	$login=$_POST['login'];
+	//On supprime l'enseignant de la base de données
+	supprimeProf($bd, $login);
+
+}
+
+
+// print_r($_POST);
+// print_r($_GET);
+
 
 echo "<center>";
 afficheProf($bd);
