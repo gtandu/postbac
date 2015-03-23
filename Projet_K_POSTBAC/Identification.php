@@ -32,7 +32,7 @@
 				if (isset($_POST['password']) && $_POST['password'] == $rep['mdp']){
 
 					$_SESSION['admin']=$rep['admin'];
-					$_SESSION['name']=$rep['nom'];
+					$_SESSION['name']=$rep['login'];
 					echo '<script language="Javascript">
 					document.location.replace("accueil.php");
 					</script>';
