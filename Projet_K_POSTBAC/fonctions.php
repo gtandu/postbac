@@ -338,6 +338,33 @@ function afficheProf($bd){
 			<input type="hidden" name="supProf" value="'.$tmp1['login'].'"/>
 			</form>';
 
+<<<<<<< HEAD
+=======
+			echo '
+			<table class="pure-table" border="1" CELLPADDING="20" style="width: 57%;">
+			<CAPTION style="padding: 2em;"> <strong>LISTE DES ENSEIGNANTS</strong> </CAPTION>
+			<tr class="pure-table-odd">
+			<th>Nom</th>
+			<th>Prénom</th>
+			<th>Matière</th>
+			<th>Modifier</th>
+			<th>Supprimer</th>
+			</tr>';
+
+			while($tmp1=$req->fetch(PDO::FETCH_ASSOC))
+			{
+				echo '
+				<tr>
+				<td style="text-align:center;" id="nom">'.$tmp1['nom'].'</td>
+				<td style="text-align:center;">'.$tmp1['prenom'].'</td>
+				<td style="text-align:center;">'.$tmp1['matiere'].'</td>
+				<td style="text-align:center;"><a href="modifProf.php" class="modifier"><i style="padding-left:2em;" class="fa fa-file-o"></i></a></td>
+				<td style="text-align:center;"><img src="effacer.png" class="supprimer"></td>
+				</tr>';
+
+			}
+			echo '</table>';
+>>>>>>> 338140bffd032e8fbc23effdf75d7c419620d9d2
 		}
 		echo '</table>';
 	}
