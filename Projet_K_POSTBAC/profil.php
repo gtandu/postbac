@@ -9,20 +9,23 @@
 ?>
 
 <?php
-$msg="";
-$msgE="";
+$msg=""; // Message pour le mot de passe
+$msgE=""; // Message pour l'email
 
+
+// On tente de changer le mot de passe uniquement si la valeur contient quelque chose    
 if(!empty($_POST['new_mdp']))
 {
-	$msg=majMdpEnseignant($bd);
+	$msg=majMdpEnseignant($bd); // On recupere le resultat Mot de passe changé ou Erreur
+    
 }
 
+
+// On tente de changer l'email uniquement si la valeur contient quelque chose
 if(!empty($_POST['new_adresse_mail']))
 {
-	$msgE=majEmailEnseignant($bd);
+	$msgE=majEmailEnseignant($bd); // On recupere le resultat email changé ou Erreur
 }
-
-
 
 
 ?>
@@ -76,7 +79,7 @@ if(!empty($_POST['new_adresse_mail']))
 		<p>
             <label for="mdp_actuel">Mot de passe actuel</label>
             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
-			<input id="mdp_actuel" class="form-control" type="password" placeholder="Mot de passe actuel" name ="mdp_actif">
+			<input id="mdp_actuel" class="form-control" type="password" placeholder="Mot de passe actuel" name ="mdp_actuel">
 			<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msg; ?></p>
 		</p>
 		

@@ -311,16 +311,16 @@ function modifDataEnseignants($bd){
 // Met a jour le mot de passe d'un enseignant sur sa page de profil
 function majMdpEnseignant($bd){
 	
-	if(isset($_POST['mdp_actif'])&& trim($_POST['mdp_actif']!=NULL) && isset($_POST['new_mdp']) && trim($_POST['new_mdp']!=NULL))
+	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['new_mdp']) && trim($_POST['new_mdp']!=NULL))
 	{
 		$query='UPDATE identification SET mdp =:new_mdp WHERE login =:login and mdp = :mdp_actif';
 		
 		$req=$bd->prepare($query);
 		$req->bindValue('login',$_SESSION['name']);
-		$req->bindValue('mdp_actif',$_POST['mdp_actif']);
+		$req->bindValue('mdp_actif',$_POST['mdp_actuel']);
 		$req->bindValue('new_mdp',$_POST['new_mdp']);
 		$req->execute();
-		
+        
 		if($req->rowCount()==1)
 		{
 			return $msg="Mot de passe changé !";
@@ -331,7 +331,7 @@ function majMdpEnseignant($bd){
 			return $msg="Erreur mot de passe actuel";
 		}
 		
-	}		
+	}
 }
 
 function MajEmailEnseignant($bd){
