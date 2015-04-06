@@ -212,6 +212,7 @@ function generer_login($bd, $nom, $prenom)
 	$login="";
 	$login=$prenom[0].$nom;
 	$tab=array();
+    $dizaine=0;
 	
 	$query='SELECT login FROM identification where nom = :nom and prenom = :prenom';
 	$req=$bd->prepare($query, array(PDO::ATTR_CURSOR, PDO::CURSOR_SCROLL));
@@ -228,14 +229,13 @@ function generer_login($bd, $nom, $prenom)
 	
 	if($nbreq!=0){
 		// Login deja existant dans la bdd
-		$max = count($rep)-1;
-		$derniercaractere = substr($tab[$max],-1);
-		if(is_numeric($derniercaractere))
+		$max = count($rep);
+		if($max>1)
 			// Dernier caractere est un nombre on incremente
 		{
-			$login.=$derniercaractere+1;
-			return $login;
-		}
+                return $login.$max;
+        }
+			
 		
 		else
 		{
@@ -244,9 +244,9 @@ function generer_login($bd, $nom, $prenom)
 			$login=$login.'1';
 			return $login;
 			
-		}	
+		}
+    }
 			
-	}
 	
 	else
 		// Login pas dans la base. 1ere creation
