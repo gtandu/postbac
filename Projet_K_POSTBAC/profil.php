@@ -1,10 +1,9 @@
-
 <?php
-		session_start();
-		require_once('connexion.php');
-		require('fonctions.php');
-		require('debut.php');
-		require('menu.php'); 
+	session_start();
+	require_once('debut.php');
+	require_once('menu.php');
+	require_once('connexion.php');
+	require_once('fonctions.php');
 	
 ?>
 
@@ -50,29 +49,34 @@ if(!empty($_POST['new_adresse_mail']))
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 <script src="profil.js"></script>
 
-<form method="post" class="pure-form pure-form-aligned" action="profil.php">
-    <fieldset><center>
-        <div class="pure-control-group">
-            <label for="nom">Identifiant :</label>
-			<?php
-				echo $_SESSION['name']; // On affiche le nom du prof qui a sa session d'active
-			?>
-        </div>
+<br>
+<br>
+
+    <center><div class="pure-control-group">
+        <label for="nom">Identifiant :</label>
+		<?php
+			echo $_SESSION['name']; // On affiche le nom du prof qui a sa session d'active
+		?>
+    </div></center>
+		
+	<br/>
+		
+	<center><div class="pure-control-group">
+        <label for="matiere">Matière :</label>
+		<?php
+			echo $matiere; // On affiche la matiere du prof
+		?> 
+    </div></center>
 		
 		<br/>
-		
-		<div class="pure-control-group">
-            <label for="matiere">Matière :</label>
-			<?php
-				echo $matiere; // On affiche la matiere du prof
-			?> 
-        </div>
-		
-		<br/>
-		
-		<span> Changer de mot de passe </span>
-		
-        <div class="pure-control-group">
+
+<center><div style="width:100%;">
+	<form method="post" class="pure-form pure-form-aligned"  action="profil.php">
+    <fieldset>		
+
+    	<div class="pure-control-group" style="position:relative; width:40%; float:left; left:10%; margin-top:2em; ">
+		<center><span><strong>Changer de mot de passe </strong></span></center>
+       
 		<p>
             <label for="mdp_actuel">Mot de passe actuel</label>
             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
@@ -94,11 +98,14 @@ if(!empty($_POST['new_adresse_mail']))
 			<span id="erreur-confirm" class="erreur">Différents !</span>
         </p>
 		
-		<div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary" id="enregitrermdp">Enregistrer</button></div>
-		
+		<div style="margin-left: auto; margin-right: auto; width: 35%;">
+			<button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary" id="enregitrermdp">Enregistrer</button>
+		</div>
+		</div>
 		<br/>
 		
-		<span> Changer d'adresse mail <span>
+		<div class="pure-control-group" style="position:relative; width:40%; float:right; right:15%; margin-top: 1em;">
+		<center><span><strong> Changer d'adresse mail </strong><span></center>
 			<p>
 				<label for="email">Email actuel </label>
 				<span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i></span>
@@ -119,11 +126,13 @@ if(!empty($_POST['new_adresse_mail']))
 				<input class="form-control" type="password" placeholder="Mot de passe" name ="mdp_actif">
 				<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msgE; ?></p>
 			</p>
-		</div>
-
-        <div style="margin-left: auto; margin-right: auto; width: 35%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button></div>
-         
+		
+        <div style="margin-left: auto; margin-right: auto; width: 35%;">
+        	<button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Enregistrer</button>
         </div>
-    </fieldset></center>
+        </div>
+    
+    </fieldset>
 </form>
+</div></center>
 

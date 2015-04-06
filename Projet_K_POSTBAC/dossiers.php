@@ -1,5 +1,19 @@
 <?php
-	session_start();
+	session_start();	
+	// $bonusMalus= array();
+	//une fois que l'utilisateur clique sur 'ok' dans validation temporaire
+	// if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
+	// {
+
+	// 	//echo 'validerTMP';
+	// 	$bonusMalus[$_POST['NumEtudiant']]= array( 'dossier' => htmlentities($_POST['dossier']), 
+	// 														'lettre' => htmlentities($_POST['lettre']),
+	// 														'autre' => htmlentities($_POST['lettre']));
+
+
+	// 	$json = json_encode($bonusMalus);
+	// 	setcookie('bonus', $json, time()+3600*24);
+	// }
 	require_once('debut.php');
 	require_once('connexion.php');
 	require_once('fonctions.php');
@@ -55,11 +69,11 @@ if ($_SESSION['admin']==1){
 	{
 		//On récupere le login de l'enseignant séléctionné
 		$prof=$_POST['prof'];
-		//On affiche le tableau des candidats qui ont été attribué a l'enseigant séléctioné
+		//On affiche le tableau des candidats qui ont été attribué a l'enseigant séléctionné
 		afficheCandidatDuProf($bd, $prof);
 	}
-// print_r($_POST);
-print_r($_SESSION);
+	// print_r($_POST);
+	print_r($_SESSION);
 
 }
 // Affichage si l'utilisateur est un enseignant
@@ -71,7 +85,7 @@ else{
 
 	if (isset($_GET['formFinal']))
 	{
-		echo '<center><p style="color: red;">Etes-vous sures de vouloir valider se formulaire ? aucune modification ne pourra être faites par la suite !</p></center>';
+		echo '<center><p style="color: red;">Etes-vous sures de vouloir valider se formulaire ? Aucune modification ne pourra être faites par la suite !</p></center>';
 		echo '<center>
 		<form method="get" action="dossiers.php">
 		<input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="ValidationFinal" value="oui">
@@ -88,14 +102,26 @@ else{
 		afficheCandidatDuProf($bd, $prof);
 	}
 
+	
+
 	echo "<center><FORM method = 'get' style='margin-left:auto; margin-right:auto; width:20%;' action='dossiers.php'>";
 
 	//Bouton pour valider le formulaire FINAL 
-	echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Valider">';
+	echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Validation Final">';
 
-	echo '</FORM></center>';
+	echo '<Form></center>';
 
-	// print_r($_GET);
+		// $cookie = $_COOKIE['bonus'];
+		// $cookie = stripslashes($cookie);
+		// $bonusMalus = json_decode($cookie, true);
+
+		// echo '<pre>';
+		// print_r($bonusMalus);
+		// echo '</pre>';
+
+	// print_r($bonusMalus);
+	print_r($_POST);
+	print_r($_GET);
 }
 
 ?>

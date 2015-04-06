@@ -1,6 +1,5 @@
 <?php
 
-
     require_once('debut.php');
     require_once('menu.php');
     require_once('connexion.php');

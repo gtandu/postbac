@@ -40,7 +40,7 @@ if (isset($_POST['selection'])){
 	
 	for ($i=0; $i<count($_POST['selection']);$i++)// On enregistre les id des élève dans un input hidden
 	{
- 	 	echo '<input type="hidden" name="num'.$i.'" value="'.$_POST['selection'][$i].'"/>';
+ 	 	echo '<input type="hidden" name="num'.$i.'" value="'.htmlentities($_POST['selection'][$i]).'"/>';
  	}	
  	//On enregistre le nombre d'élève à attribuer
  	echo '<input type="hidden" name="nombre" value="'.count($_POST['selection']).'"/>';
@@ -61,7 +61,7 @@ if ( isset($_POST['attribuer']) && isset($_POST['filiere']) && isset($_POST['nom
 	else{
 		//on enregistre la filiere dans laquel on va faire la modif 
 		$filiere = 'Etudiant';
- 		$filiere .= strtoupper($_POST['filiere']);//mettre les lettre en majuscule 
+ 		$filiere .= htmlentities(strtoupper($_POST['filiere']));//mettre les lettre en majuscule 
  		// echo $filiere;
  		//Tant que le nombre d'élève n'est pas atteint
  		for($i=0; $i<=$_POST['nombre']-1; $i++)
@@ -70,7 +70,7 @@ if ( isset($_POST['attribuer']) && isset($_POST['filiere']) && isset($_POST['nom
  			$num='num';
  			$num.=$i;
  			//On ajoute le login de l'enseignant dans la colonne 'enseigant' du candidat
- 			$res = ajoutLoginEnseignant($bd, $_POST['prof'], $filiere, $_POST[$num]);
+ 			$res = ajoutLoginEnseignant($bd, htmlentities($_POST['prof']), $filiere, $_POST[$num]);
 
  			if ($res == FALSE){
 
@@ -104,7 +104,7 @@ if ($_SERVER['REQUEST_METHOD']=="POST" && isset($_POST['selection']) && isset($_
 
 		//On enregistre le nom du tableau dans lequel on devra chercher les élèves
 		$filiere = 'Atraiter';
- 		$filiere .= $_POST['filiere'];
+ 		$filiere .= htmlentities($_POST['filiere']);
 		
 		//création du tableau récapitulatif
 		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="15" style="width: 57%;">

@@ -169,8 +169,8 @@ function createTableID($bd){
  	`email` VARCHAR( 50 ) NOT NULL ,
  	`mdp` VARCHAR( 50 ) NOT NULL ,
  	`matiere` VARCHAR( 50 ) NOT NULL ,
- 	`admin` INTEGER NOT NULL,
  	`cle` VARCHAR ( 32 ),
+ 	`admin` INTEGER NOT NULL,
  	PRIMARY KEY (login))');
 	$req->execute();
 }
@@ -264,7 +264,7 @@ function insertDataEnseignants($bd){
 
 		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
 		$derniercaractere = substr($login,-1);
-        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0,0)';
+        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, NULL, 0)';
         $req=$bd->prepare($query);
         $req->bindValue('login', $login);
         $req->bindValue(':nom', $_GET['nom']);
@@ -726,18 +726,21 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 //Fonction qui retourne tous les candidats ayant été attribuer a un enseignant donné en paramètre ($prof).
 function afficheCandidatDuProf($bd, $prof){
 
+	//on récupere les étudiant à traité de la table FI
 	$query="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI WHERE enseignant =  :prof";
 	$req=$bd->prepare($query);
 	$req->bindValue('prof',$prof);
 	$req->execute();
 
+	//on récupere les étudiant à traité de la table FA
 	$query2="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA WHERE enseignant =  :prof";
 	$req2=$bd->prepare($query2);
 	$req2->bindValue('prof',$prof);
 	$req2->execute();
 
-	if ($_SESSION['admin']==1)
+	if ($_SESSION['admin']==1)// pour la session admin 
 	{
+		//on prépare les entêtes du tableau 
 		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr>
@@ -751,7 +754,7 @@ function afficheCandidatDuProf($bd, $prof){
 			<th>Postule</th>
 		</tr> ';
 	
-
+		//on remplis le tableau avec les élèves de la la base 
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
 			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
@@ -767,10 +770,11 @@ function afficheCandidatDuProf($bd, $prof){
 		echo "</table></center>";
 
 	}
-	else
+	else // pour les session enseignants
 	{
+		//on prépare les entêtes du tableau 
 		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
-		<FORM method = "post" style="margin-left:auto; margin-right:auto; width:20%;" action="dossier.php">
+		<FORM method = "post" style="margin-left:auto; margin-right:auto; width:20%;" action="dossiers.php">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr>
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
@@ -783,19 +787,25 @@ function afficheCandidatDuProf($bd, $prof){
 			<th>Autre</th>
 			<th>AvisCE</th>
 			<th>Postule</th>
+			<th>Validation temporaire</th>
 		</tr> ';
 
+		//on remplis le tableau avec les élèves de la la base + un champs pour la saisi des bonus/malus 
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '<tr><td><a href="URL demandé gerard">'.$rep['Nom'].'</a></td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-				<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td></tr>';
+			echo '<FORM method = "post" action="dossiers.php"><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/>
+			<tr><td><a href="URL demandé à gerard">'.$rep['Nom'].'</a></td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+			<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr></form>';
 		}
 
 		while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '<tr><td><a href="URL demandé gerard">'.$rep2['Nom'].'</a></td><td>'.$rep2['Prénom'].'</td><td>'.$rep2['Numero'].'</td><td>'.$rep2['InfosDiplôme'].'</td>
-				<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td></tr>';
+			echo '<FORM method = "post" action="dossiers.php"><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/>
+			<tr><td><a href="URL demandé gerard">'.$rep2['Nom'].'</a></td><td>'.$rep2['Prénom'].'</td><td>'.$rep2['Numero'].'</td><td>'.$rep2['InfosDiplôme'].'</td>
+			<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr></form>';
 		}
+
+		// echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Validation Final">';
 
 		echo "</FORM></table></center>";
 	}
@@ -968,7 +978,7 @@ function supprimerNULL($bd){
 }
 //supprimerNULL($bd);
 
-function bonusMalusTotal($bd, $ine, $bn) //applique les bonus/malus aux eleves ON A BESOIN DU FORMULAIRE BORDEL DE MERDE!!!!!! --> Je t'en pris fait le si s'est si urgent !!!!!!!
+function bonusMalusTotal($bd, $ine, $bn) //applique les bonus/malus aux eleves ON A BESOIN DU FORMULAIRE BORDEL DE MERDE!!!!!! --> Je t'en pris fait le si c'est si urgent !!!!!!!
 {
 	$req = $bd->prepare('UPDATE m SET Moyenne = Moyenne+ :bn  WHERE Numero = :ine');//On icrémente la moyenne de l'eleve de la valeur de bn
 	$req->bindValue(':bn', $bn);
