@@ -609,11 +609,11 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 
 		
 
-
 		if ($f == 'fi')
 		{	
-			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
+			echo '<center><table  class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
+		<thead>
  		<tr style="background-color:#F0F0F0;">
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
 			<th><div class=arrow2>Prenom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
@@ -623,7 +623,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>BonusMalus</th>
 			<th>AvisCE</th>
 			<th>Selectionner</th>
-		</tr> ';
+		</tr> </thead><tbody>';
 
 			$req = $bd->prepare('select * from AtraiterFI');
 			$req->execute();
@@ -679,7 +679,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
 		}
 		
-		echo "</form></table></center>";
+		echo "</tbody></form></table></center>";
 
 
 		}
