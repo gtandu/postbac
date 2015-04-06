@@ -88,7 +88,29 @@ function CocheTout(ref, name) {
 }	
 </script>
 	
-
+<script>
+$(document).ready(function() {
+    $('#trier').dataTable(
+	{stateSave: true,
+		"ordering":false,
+		 "language": {
+            "lengthMenu": "Afficher _MENU_ par page",
+            "zeroRecords": "Aucune recherche ne correspond ! ",
+            "info": "Page _PAGE_ sur _PAGES_",
+            "infoEmpty": "",
+            "infoFiltered": "",
+			"search": "Rechercher:",
+			"paginate": {
+        "first":      "Première",
+        "last":       "Dernière",
+        "next":       "Suivant",
+        "previous":   "Précédant"
+        }
+		 }
+	});
+} );
+</script>
+	
 <?php
 
 
