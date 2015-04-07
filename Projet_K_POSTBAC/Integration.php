@@ -71,11 +71,14 @@ echo $insertion4;
 //echo $insertion5;
 
 
-
+createTableID($bd);
+ajoutColonneEnseignant($bd);
+supprimerNULL($bd);
 tableEtudiantAvecMoyenne($bd);
 eleveSelectionner($bd);
 eleveATraiter($bd);
 elevePostuleFAFI($bd);
+
 
 
 
