@@ -74,8 +74,7 @@ if ($_SESSION['admin']==1){
 		//On affiche le tableau des candidats qui ont été attribué a l'enseigant séléctionné
 		afficheCandidatDuProf($bd, $prof);
 	}
-	// print_r($_POST);
-	print_r($_SESSION);
+
 
 }
 // Affichage si l'utilisateur est un enseignant

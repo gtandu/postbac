@@ -264,7 +264,7 @@ function insertDataEnseignants($bd){
 
 		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
 		$derniercaractere = substr($login,-1);
-        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, NULL, 0)';
+        $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0, 0)';
         $req=$bd->prepare($query);
         $req->bindValue('login', $login);
         $req->bindValue(':nom', $_GET['nom']);
