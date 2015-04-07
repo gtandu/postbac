@@ -1,19 +1,21 @@
 <?php
 	session_start();	
-	// $bonusMalus= array();
+	
 	//une fois que l'utilisateur clique sur 'ok' dans validation temporaire
-	// if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
-	// {
+	if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
+	{
+				$numEtudiant=$_POST['NumEtudiant'];
+				$bonusMalus= array('dossier' => htmlentities($_POST['dossier']), 
+									'lettre' => htmlentities($_POST['lettre']),
+									'autre' => htmlentities($_POST['autre']));
+			
+		$json = json_encode($bonusMalus);
+		setcookie($numEtudiant, $json, time()+3600*24);
+		echo '<script language="Javascript">
+					document.location.replace("dossiers.php");
+			  </script>';
 
-	// 	//echo 'validerTMP';
-	// 	$bonusMalus[$_POST['NumEtudiant']]= array( 'dossier' => htmlentities($_POST['dossier']), 
-	// 														'lettre' => htmlentities($_POST['lettre']),
-	// 														'autre' => htmlentities($_POST['lettre']));
-
-
-	// 	$json = json_encode($bonusMalus);
-	// 	setcookie('bonus', $json, time()+3600*24);
-	// }
+	}
 	require_once('debut.php');
 	require_once('connexion.php');
 	require_once('fonctions.php');
@@ -111,17 +113,20 @@ else{
 
 	echo '<Form></center>';
 
-		// $cookie = $_COOKIE['bonus'];
-		// $cookie = stripslashes($cookie);
-		// $bonusMalus = json_decode($cookie, true);
+	//une fois que l'utilisateur clique sur 'ok' dans validation temporaire
+	if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
+	{
+		$cookie = $_COOKIE[$numEtudiant];
+		$cookie = stripslashes($cookie);
+		$bonusMalus = json_decode($cookie, true);
 
-		// echo '<pre>';
-		// print_r($bonusMalus);
-		// echo '</pre>';
+	}
 
-	// print_r($bonusMalus);
-	print_r($_POST);
-	print_r($_GET);
+	// unset($_COOKIE['214346']);
+	// print_r($_COOKIE);
+	// print_r($_POST);
+	// print_r($_GET);
+
 }
 
 ?>

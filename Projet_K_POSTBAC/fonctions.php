@@ -640,7 +640,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		}
 		else
 		{
-			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
+			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="8" style="width: 55% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr style="background-color:#F0F0F0;">
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
@@ -664,9 +664,10 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			while($rep = $req->fetch(PDO::FETCH_ASSOC))
 			{
 				$filiere=postule2filiere($bd,$rep['Numero']);
+				//if (eleve attribué) tr style = color 
 				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
 				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-				'</td><td>'.$filiere.'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+				'</td><td>'.$filiere.'</td><center><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></center></tr>';
 			}
 			
 		
@@ -722,6 +723,22 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 	}
 
 }
+
+//Renvoi la valeur du cookie correspondant au champs déja saisi par l'enseignant
+function bonusMalusInsertForm($num, $champs){
+
+		if( isset($_COOKIE[$num]) ){
+		
+			
+				$cookie = $_COOKIE[$num];
+				$cookie = stripslashes($cookie);
+				$val = json_decode($cookie, true);
+				return $val[$champs];
+
+
+			}
+}
+
 
 //Fonction qui retourne tous les candidats ayant été attribuer a un enseignant donné en paramètre ($prof).
 function afficheCandidatDuProf($bd, $prof){
@@ -793,16 +810,17 @@ function afficheCandidatDuProf($bd, $prof){
 		//on remplis le tableau avec les élèves de la la base + un champs pour la saisi des bonus/malus 
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '<FORM method = "post" action="dossiers.php"><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/>
+			
+			echo '<FORM method = "post" action="dossiers.php">
 			<tr><td><a href="URL demandé à gerard">'.$rep['Nom'].'</a></td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-			<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr></form>';
+			<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier" value="'.bonusMalusInsertForm($rep['Numero'], 'dossier').'"></td><td><input type="text" size="3" name="lettre" value="'.bonusMalusInsertForm($rep['Numero'], 'lettre').'"></td><td><input type="text" size="3" name="autre" value="'.bonusMalusInsertForm($rep['Numero'], 'autre').'"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/></FORM>';
 		}
 
 		while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
 		{
-			echo '<FORM method = "post" action="dossiers.php"><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/>
+			echo '<FORM method = "post" action="dossiers.php">
 			<tr><td><a href="URL demandé gerard">'.$rep2['Nom'].'</a></td><td>'.$rep2['Prénom'].'</td><td>'.$rep2['Numero'].'</td><td>'.$rep2['InfosDiplôme'].'</td>
-			<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier"></td><td><input type="text" size="3" name="lettre"></td><td><input type="text" size="3" name="autre"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr></form>';
+			<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier" value="'.bonusMalusInsertForm($rep2['Numero'], 'dossier').'"></td><td><input type="text" size="3" name="lettre" value="'.bonusMalusInsertForm($rep2['Numero'], 'lettre').'"></td><td><input type="text" size="3" name="autre" value="'.bonusMalusInsertForm($rep2['Numero'], 'autre').'"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr><input type="hidden" name="NumEtudiant" value="'.$rep2['Numero'].'"/></FORM>';
 		}
 
 		// echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Validation Final">';

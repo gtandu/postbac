@@ -7,6 +7,8 @@
 	
 ?>
 
+<center><p id='textAccueil'> <strong>Cet espace permet de modifier vos coordonées personnelles</strong></p></center> 
+
 <?php
 $msg=""; // Message pour le mot de passe
 $msgE=""; // Message pour l'email
@@ -81,24 +83,25 @@ if(!empty($_POST['new_adresse_mail']))
 		<center><span><strong>Changer de mot de passe </strong></span></center>
        
 		<p>
+			<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msg; ?></p>
             <label for="mdp_actuel">Mot de passe actuel</label>
             <span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 			<input id="mdp_actuel" class="form-control" type="password" placeholder="Mot de passe actuel" name ="mdp_actuel">
-			<p style=" margin-left:auto; margin-right:auto; width:73%; color: red; "><?php echo $msg; ?></p>
+			
 		</p>
 		
 		<p>
 			<label for="mdp_new">Nouveau mot de passe</label>
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 			<input id="mdp_new" class="form-control" type="password" placeholder="Nouveau mot de passe" name ="new_mdp">
-			<span id="erreur-mdp" class="erreur">Trop court !</span>
+			<span id="erreur-mdp" class="erreur" style="color: red;">Trop court !</span>
 		</p>
 		
 		<p>
 			<label for="mdp_confirm">Retappez mot de passe</label>
 			<span class="input-group-addon"><i class="fa fa-key fa-fw"></i></span>
 			<input id="mdp_confirm" class="form-control" type="password" placeholder="Retappez mot de passe" name ="mdp_confirm">
-			<span id="erreur-confirm" class="erreur">Différents !</span>
+			<span id="erreur-confirm" class="erreur" style="color: red;">Différents !</span>
         </p>
 		
 		<div style="margin-left: auto; margin-right: auto; width: 35%;">
