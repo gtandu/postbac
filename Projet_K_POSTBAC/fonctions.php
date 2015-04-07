@@ -671,14 +671,14 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			}
 			
 		
-		while($rep = $req->fetch(PDO::FETCH_ASSOC))
-		{
-			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
-			if($rep['Moyenne']==NULL)echo '<td>0</td>';
-			else echo '<td>'.$rep['Moyenne'].'</td>';
-			echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-			'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
-		}
+		// while($rep = $req->fetch(PDO::FETCH_ASSOC))
+		// {
+		// 	echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
+		// 	if($rep['Moyenne']==NULL)echo '<td>0</td>';
+		// 	else echo '<td>'.$rep['Moyenne'].'</td>';
+		// 	echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+		// 	'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+		// }
 		
 		echo "</tbody></form></table></center>";
 
@@ -989,9 +989,9 @@ function supprimerNULL($bd){
 
 	$req->execute();
 
-	$req = $bd->prepare("DELETE FROM EtudiantFI WHERE Moyenne IS NULL OR Moyenne=0");
+	$req2 = $bd->prepare("DELETE FROM EtudiantFI WHERE Moyenne IS NULL OR Moyenne=0");
 
-	$req->execute();
+	$req2->execute();
 
 }
 //supprimerNULL($bd);
