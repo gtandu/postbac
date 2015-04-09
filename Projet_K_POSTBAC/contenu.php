@@ -17,7 +17,11 @@
 
 <?php
 
+<<<<<<< HEAD
 if ($_SESSION['admin']==1){
+=======
+if (htmlentities($_SESSION['admin'])==1){
+>>>>>>> de83e66dc8e2c706e7745c79d73d220ebbd0435e
 
  echo '<center><div style="margin-left: auto; margin-right: auto; width: 20%; ">
  		<a href="FormulaireProf.php">
