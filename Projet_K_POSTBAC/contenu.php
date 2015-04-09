@@ -17,7 +17,7 @@
 
 <?php
 
-if (htmlentities($_SESSION['admin'])==1{
+if (htmlentities($_SESSION['admin'])==1){
 
  echo '<center><div style="margin-left: auto; margin-right: auto; width: 20%; ">
  		<a href="FormulaireProf.php">
