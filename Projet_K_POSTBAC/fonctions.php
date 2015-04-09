@@ -1228,15 +1228,22 @@ function bonusMalusTotal($bd, $filiere, $prof) {
 
 	while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
-			$total = bonusMalusInsertForm($rep2['Numero'], 'dossier') + bonusMalusInsertForm($rep2['Numero'], 'lettre') + bonusMalusInsertForm($rep2['Numero'], 'autre');
-			echo $total;
-			// $query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
-			
+			$total = bonusMalusInsertForm($rep['Numero'], 'dossier') + bonusMalusInsertForm($rep['Numero'], 'lettre') + bonusMalusInsertForm($rep['Numero'], 'autre');
+			$query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
+			$req3=$bd->prepare($query);
+			$req3->bindValue('total',$total);
+			$req3->bindValue('id',$rep['Numero']);
+			$req3->execute();			
 		}
 
 	while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
 		{
-			$query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués =  WHERE Numero = :id";
+			$total = bonusMalusInsertForm($rep2['Numero'], 'dossier') + bonusMalusInsertForm($rep2['Numero'], 'lettre') + bonusMalusInsertForm($rep2['Numero'], 'autre');
+			$query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
+			$req4=$bd->prepare($query);
+			$req4->bindValue('total',$total);
+			$req4->bindValue('id',$rep2['Numero']);
+			$req4->execute();
 		}
 
 	

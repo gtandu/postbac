@@ -132,16 +132,7 @@ else{
 	echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Validation Final">';
 
 	echo '<Form></center>';
-
-	// //une fois que l'utilisateur clique sur 'ok' dans validation temporaire
-	// if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
-	// {
-	// 	//Le cookie préparer précédement s'enregistre
-	// 	$cookie = $_COOKIE[$numEtudiant];
-	// 	$cookie = stripslashes($cookie);
-	// 	$bonusMalus = json_decode($cookie, true);
-
-	// }
+	
 
 	// unset($_COOKIE['214346']);
 	// print_r($_COOKIE);
