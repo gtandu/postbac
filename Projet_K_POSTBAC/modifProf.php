@@ -39,26 +39,26 @@ $donnees=$req->fetch();
 }
 ?>
 
-<input type="hidden" name="login" value="<?php echo $login;?>"/>
+<input type="hidden" name="login" value="<?php echo htmlentities($login);?>"/>
     <fieldset>
         <center><div class="pure-control-group">
             <label for="nom">Nom</label>
-            <input size=35 id="name" type="text" placeholder="Nom" name="nom" value="<?php echo $donnees['nom']; ?>">
+            <input size=35 id="name" type="text" placeholder="Nom" name="nom" value="<?php echo htmlentities($donnees['nom']); ?>">
         </div>
 
         <div class="pure-control-group">
             <label for="prenom">Prénom</label>
-            <input size=35 id="password" type="text" placeholder="Prénom" name="prenom" value="<?php echo $donnees['prenom']; ?>">
+            <input size=35 id="password" type="text" placeholder="Prénom" name="prenom" value="<?php echo htmlentities($donnees['prenom']); ?>">
         </div>
 
         <div class="pure-control-group">
             <label for="email">Email </label>
-            <input size=35 id="email" type="email" placeholder="Email Enseignant" name="email" value="<?php echo $donnees['email']; ?>">
+            <input size=35 id="email" type="email" placeholder="Email Enseignant" name="email" value="<?php echo htmlentities($donnees['email']); ?>">
         </div>
 
         <div class="pure-control-group">
             <label for="matiere">Matière</label>
-            <input size=35 id="email" type="text" placeholder="Matière de l'enseignant" name="matiere" value="<?php echo $donnees['matiere']; ?>">
+            <input size=35 id="email" type="text" placeholder="Matière de l'enseignant" name="matiere" value="<?php echo htmlentities($donnees['matiere']); ?>">
         </div>
 
         <div style="margin-top: 2em; margin-left:auto; width: 85%;"><button style="padding-left: 2em; padding-right:2em; border-radius: 10px;" type="submit" class="pure-button pure-button-primary">Modifier</button></div>
