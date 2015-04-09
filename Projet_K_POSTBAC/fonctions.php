@@ -277,12 +277,13 @@ function generer_login($bd, $nom, $prenom)
 }
 //Insertion des données de l'enseignant a partir du formulaire 
 function insertDataEnseignants($bd){
-
-	$mdp=generer_mot_de_passe(8);
+	
+	$mdpgen=generer_mot_de_passe(8);
+	$mdp=password_hash($mdpgen,PASSWORD_BCRYPT) ;
 	//On verifie que tous les champs on été saisie 
     if(isset($_GET['nom']) && trim($_GET['nom']!=NULL) && isset($_GET['prenom']) && trim($_GET['prenom']!=NULL) && isset($_GET['matiere']) && trim($_GET['matiere']!=NULL) && isset($_GET['email']) && trim($_GET['email']))
     {
-    	//On genere un mot de passe
+    	//On genere un Login
 		$login = generer_login($bd, htmlentities($_GET['nom']), htmlentities($_GET['prenom']));
 		$derniercaractere = substr($login,-1);
 
@@ -301,8 +302,13 @@ function insertDataEnseignants($bd){
        	//si la requete a été executé, on envoi un mail récapitulatif
         if($req->execute())
         {
+			$msg='Bonjour, vous trouverez ci dessous votre Identifiant et votre mot de passe pour acceder à Postebac.
+			
+			Identifiant : '.$login.'
+			
+			Mot de passe : '.$mdpgen ;
 
-        	mail( htmlentities($_GET['email']), 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
+        	mail( htmlentities($_GET['email']), 'Identifiant et Mot de passe PostBac', $msg, null, 'g.tandu@hotmail.fr');
 
         	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_GET['nom']) .' '. htmlentities($_GET['prenom']) .' à été enregistré !</strong></p></div></center>';
 
