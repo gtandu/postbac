@@ -109,10 +109,7 @@ else{
 	//Si la confirmation du formulaire final a été accepté 
 	if( isset($_GET['ValidationFinal']) && $_GET['ValidationFinal']=='oui'){
 
-
-			echo bonusMalusInsertForm(713350, 'filiere');
-			$total = bonusMalusInsertForm(713350, 'dossier') + bonusMalusInsertForm(713350, 'lettre') + bonusMalusInsertForm(713350, 'autre');
-			echo $total;
+			bonusMalusTotal($bd, 'KOuld');
 	}
 
 
@@ -132,7 +129,7 @@ else{
 	echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Validation Final">';
 
 	echo '<Form></center>';
-	
+
 
 	// unset($_COOKIE['214346']);
 	// print_r($_COOKIE);

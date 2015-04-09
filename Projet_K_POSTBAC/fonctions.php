@@ -1212,7 +1212,7 @@ function supprimerNULL($bd){
 //supprimerNULL($bd);
 
 //applique les bonus/malus aux eleves 
-function bonusMalusTotal($bd, $filiere, $prof) {
+function bonusMalusTotal($bd, $prof) {
 
 	//On recupere le numero des étudiants attribuer a l'enseignant (prof)
 	$query="SELECT Numero FROM EtudiantFI WHERE enseignant =  :prof";
@@ -1226,9 +1226,12 @@ function bonusMalusTotal($bd, $filiere, $prof) {
 	$req2->execute();
 
 
+	//Pour chaque etudiant 
 	while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
+			// on calcul le total des bonus/malus
 			$total = bonusMalusInsertForm($rep['Numero'], 'dossier') + bonusMalusInsertForm($rep['Numero'], 'lettre') + bonusMalusInsertForm($rep['Numero'], 'autre');
+			//On effectue les changements dans la base
 			$query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
 			$req3=$bd->prepare($query);
 			$req3->bindValue('total',$total);
@@ -1238,8 +1241,10 @@ function bonusMalusTotal($bd, $filiere, $prof) {
 
 	while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
 		{
+			// on calcul le total des bonus/malus
 			$total = bonusMalusInsertForm($rep2['Numero'], 'dossier') + bonusMalusInsertForm($rep2['Numero'], 'lettre') + bonusMalusInsertForm($rep2['Numero'], 'autre');
-			$query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
+			//On effectue les changements dans la base
+			$query="UPDATE EtudiantFA SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
 			$req4=$bd->prepare($query);
 			$req4->bindValue('total',$total);
 			$req4->bindValue('id',$rep2['Numero']);
