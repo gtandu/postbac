@@ -2,15 +2,16 @@
 	session_start();	
 	
 	//une fois que l'utilisateur clique sur 'ok' dans validation temporaire
-	if (isset($_POST['validerTmp']) && is_int()isset($_POST['NumEtudiant']))
+	if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
 	{			
-				//on enregistre les valeurs (bonus/malus) de l'étudiant dans un tableau 
 				$numEtudiant=$_POST['NumEtudiant'];
+
+				//on enregistre les valeurs (bonus/malus) de l'étudiant dans un tableau 
 				$bonusMalus= array('dossier' => htmlentities($_POST['dossier']), 
-									'lettre' => htmlentities($_POST['lettre']),
-									'autre' => htmlentities($_POST['autre']),
-									'filiere' => htmlentities($_POST['filiere'])
-								);
+								'lettre' => htmlentities($_POST['lettre']),
+								'autre' => htmlentities($_POST['autre']),
+								'filiere' => htmlentities($_POST['filiere'])
+							);
 		
 		//On enregistre le tableau dans un cookie
 		$json = json_encode($bonusMalus);
@@ -87,7 +88,7 @@ if ($_SESSION['admin']==1){
 // Affichage si l'utilisateur est un enseignant
 else{
 
-	echo "<center><p id='textAccueil'><strong>Voici la liste des candidats que vous devrez traiter en remplissant les champs correspondants: </strong></p></center>";
+	echo "<center><p id='textAccueil'><strong>Voici la liste des candidats que vous devrez traiter en remplissant les champs correspondants avec des entiers : </strong></p></center>";
 
 	// print_r($_SESSION);
 
@@ -110,7 +111,7 @@ else{
 
 
 			echo bonusMalusInsertForm(713350, 'filiere');
-			$total = bonusMalusInsertForm($rep2[713350], 'dossier') + bonusMalusInsertForm($rep2[713350], 'lettre') + bonusMalusInsertForm($rep2[713350], 'autre');
+			$total = bonusMalusInsertForm(713350, 'dossier') + bonusMalusInsertForm(713350, 'lettre') + bonusMalusInsertForm(713350, 'autre');
 			echo $total;
 	}
 
