@@ -37,7 +37,7 @@ function get_array($fileCsv) {
 //ATTENTION: IL FAUT QUE LES CHAMPS DE LA PREMIERE LIGNE DU FICHIER SOIENT CONCATENE 
 function createTable($nomTable, $array_file, $primaryCles1){
 
-	$req= 'CREATE TABLE if not exists '.$nomTable.' ( ';
+	$req= 'CREATE TABLE if not exists '.htmlentities($nomTable).' ( ';
 
 	$i=0; 
 
@@ -67,7 +67,7 @@ function createTable($nomTable, $array_file, $primaryCles1){
 
 	//Définition des clés primaires 
 
-	$req=$req.'PRIMARY KEY ('.$primaryCles1.'))';
+	$req=$req.'PRIMARY KEY ('.htmlentities($primaryCles1).')';
 
 	return $req;
 }
@@ -75,14 +75,23 @@ function createTable($nomTable, $array_file, $primaryCles1){
 // fonction qui prépare la requête d'insertion des fichier csv 
 function prepareInsert($array_file, $nomTable, $line){
 
+<<<<<<< HEAD
 	//On vérifie que la ligne existe
 	if ($line>(count($array_file)-1))
+=======
+	if (htmlentities($line)>(count(htmlentities($array_file))-1)
+>>>>>>> c3a54e5d5046bd6d40b4b0ed8f00b4d3798206b0
 	{
 		return 'Erreur $line: cette ligne n\'existe pas';
 	}
 
+<<<<<<< HEAD
 	$insert= 'INSERT INTO '.$nomTable.' VALUES( ';
 	//On prepare la requete d'insertion
+=======
+	$insert= 'INSERT INTO '.htmlentities($nomTable).' VALUES( ';
+
+>>>>>>> c3a54e5d5046bd6d40b4b0ed8f00b4d3798206b0
 	for($y=0; $y<count($array_file[0]);$y++)
 	{
 		if (is_numeric(str_replace ( ",", ".", $array_file[$line][$y]))==FALSE)
@@ -141,8 +150,12 @@ function prepareInsert($array_file, $nomTable, $line){
 		}	
 	}
 
+<<<<<<< HEAD
 	//on retourne la requête d'insertion pour une ligne du tableau 
 	return $insert;
+=======
+	return htmlentities($insert);
+>>>>>>> c3a54e5d5046bd6d40b4b0ed8f00b4d3798206b0
 }
 
 //Fonction qui insert toutes les lignes du fichier csv dans la base
@@ -210,7 +223,7 @@ function generer_mot_de_passe($nb_caractere)
             $mot_de_passe .= $chaine[$place_aleatoire];
         }
 
-        return $mot_de_passe;   
+        return htmlentities($mot_de_passe);   
 }
 
 // Fonction qui genere un login en fonction du nom et du prenom et evite les doublons a la creation
@@ -258,7 +271,7 @@ function generer_login($bd, $nom, $prenom)
 	else
 		// Login pas dans la base. 1ere creation
 	{
-		return $login;
+		return htmlentities($login);
 	}
 	
 }
@@ -288,8 +301,13 @@ function insertDataEnseignants($bd){
        	//si la requete a été executé, on envoi un mail récapitulatif
         if($req->execute())
         {
+<<<<<<< HEAD
         	mail( htmlentities($_GET['email']), 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
         	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_GET['nom']) .' '. htmlentities($_GET['prenom']) .' à été enregistré !</strong></p></div></center>';
+=======
+        	mail( htmlentities($_GET['email']), 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr';
+        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_GET['nom']) .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div></center>';
+>>>>>>> c3a54e5d5046bd6d40b4b0ed8f00b4d3798206b0
         };
     }
 }
@@ -389,7 +407,7 @@ function MajEmailEnseignant($bd){
  
 			mail($destinataire, $sujet, $message, $entete) ; // Envoi du mail
 			
-			return $msg="Mail de confirmation envoyé a votre nouvelle adresse!";
+			return htmlentities($msg)="Mail de confirmation envoyé a votre nouvelle adresse!";
 		}
 		
 		else

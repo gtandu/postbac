@@ -17,7 +17,7 @@
 
 <?php
 
-if ($_SESSION['admin']==1){
+if (htmlentities($_SESSION['admin'])==1{
 
  echo '<center><div style="margin-left: auto; margin-right: auto; width: 20%; ">
  		<a href="FormulaireProf.php">
@@ -46,12 +46,12 @@ if (isset($_POST['supProf']) && $_POST['supProf']==$tmp1['login'])
 	{
 
 	//Affichage d'une confirmation pour la suppression
-	echo '<center><p style="color: red;">Etes-vous sures de vouloir supprimer "'.$tmp1['nom'].' '.$tmp1['prenom'].'" de la base de données des enseignants ?</p></center>';
+	echo '<center><p style="color: red;">Etes-vous sures de vouloir supprimer "'.htmlentities($tmp1['nom']).' '.htmlentities($tmp1['prenom']).'" de la base de données des enseignants ?</p></center>';
 	echo '<center>
 	<form method="post" action="contenu.php">
 	<input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="delete" value="oui">
 	<input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="delete" value="non">
-	<input type="hidden" name="login" value="'.$tmp1['login'].'"/> 
+	<input type="hidden" name="login" value="'.htmlentities($tmp1['login']).'"/> 
 	</form>
 	</center>';
 
@@ -61,7 +61,7 @@ if (isset($_POST['supProf']) && $_POST['supProf']==$tmp1['login'])
 //si confirmation accepté 
 if (isset($_POST['delete']) && $_POST['delete']=='oui')
 {
-	$login=$_POST['login'];
+	$login=htmlentities($_POST['login']);
 	//On supprime l'enseignant de la base de données
 	supprimeProf($bd, $login);
 
