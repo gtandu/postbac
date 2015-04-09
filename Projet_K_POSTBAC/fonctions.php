@@ -626,9 +626,40 @@ function searchEleve($bd, $id, $fi){
 // $test = searchEleve($bd, 646617, 'AtraiterFA');
 // print_r($test);
 
+function pagination($nombreDePages, $pageActuelle, $f)
+{
+	echo '<p align="center">Page : '; //Pour l'affichage, on centre la liste des pages
+	for($i=1; $i<=$nombreDePages; $i++) //On fait notre boucle
+	{
+		 //On va faire notre condition
+		 if($i==$pageActuelle) //Si il s'agit de la page actuelle...
+		 {
+			 echo ' [ '.$i.' ] '; 
+			 
+		 }	
+		 else //Sinon...
+		 {
+			if($f == 'fi')
+			{
+				echo ' <a href="liste.php?fi=Filière+initiale&page='.$i.'">'.$i.'</a> ';
+			}
+			 
+			else{
+				echo ' <a href="liste.php?fi=Filière+alternance&page='.$i.'">'.$i.'</a> ';
+			}
+			 
+			  
+		 }
+	}
+}
+	
 function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons Alternance/initiale au-dessus de la liste )
-{							 // avec une checkbox avec comme valeur le num de l'eleve
-	//POur la session administrateur 
+{
+	
+	
+	
+	
+	// avec une checkbox avec comme valeur le num de l'eleve
 	if ($_SESSION['admin']==1){
 		
 		
@@ -642,13 +673,43 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 		// echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
 
 		echo' Tout (dé)cocher <input onclick="CocheTout(this, \'selection[]\');" type="checkbox"><br/>';
-
-
 		
-		//affiche le tableau des éléves postulant en FI
+		
+		// Si le on choisit filiere initiale
 		if ($f == 'fi')
-		{	
-			//affiche l'entete du tableau
+		{
+			$nb_lignes_total= $bd->prepare('SELECT COUNT(*) AS total FROM AtraiterFI'); //Nous récupérons le contenu de la requête dans $retour_total, requete differentes dans chaque cas
+			$nb_lignes_total->execute();
+			while($donnees_total=$nb_lignes_total->fetch(PDO::FETCH_ASSOC))
+			{
+				$total = $donnees_total['total']; //On récupère le total pour le placer dans la variable $total.
+			}
+			
+			$messagesParPage=25; //Nous allons afficher 5 messages par page.
+
+			//Nous allons maintenant compter le nombre de pages.
+			$nombreDePages=ceil($total/$messagesParPage);
+			
+			
+			if(isset($_GET['page'])) // Si la variable $_GET['page'] existe...
+			{
+				$pageActuelle=intval($_GET['page']);
+			 
+				if($pageActuelle>$nombreDePages) // Si la valeur de $pageActuelle (le numéro de la page) est plus grande que $nombreDePages...
+				{
+					$pageActuelle=$nombreDePages;
+				}
+			}
+			
+			else // Sinon
+			{
+				$pageActuelle=1; // La page actuelle est la n°1    
+			}
+
+			$premiereEntree=($pageActuelle-1)*$messagesParPage; // On calcul la première entrée à lire
+			
+			pagination($nombreDePages, $pageActuelle, $f);
+				
 			echo '<center><table  class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
 		<thead>
@@ -662,32 +723,66 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>AvisCE</th>
 			<th>Selectionner</th>
 		</tr> </thead><tbody>';
-
-			$req = $bd->prepare('select * from AtraiterFI');
+			
+ 
+		 
+		
+		////////////////////////////////////
+		echo '</p>';
+			$req = $bd->prepare('select * from AtraiterFI order by moyenne DESC LIMIT '.$premiereEntree.', '.$messagesParPage.'');
 			$req->execute();
 			
 			//Permet de récuperer le nom de la filiere dans la variable POST
 			echo '<input type="hidden" name="filiere" value="'.$f.'"/>';
 
-			//affiche les lignes du tableau
 			while($rep = $req->fetch(PDO::FETCH_ASSOC))
 			{	
-				//on verifie que l'élève ne postule pas dans les deux filiere 
-				$filiere=postule2filiere($bd,$rep['Numero']);
-				if ($filiere == 'NON'){
-
-					echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-					<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-					'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
-
-				}
-				
+				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+				'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
 			}
+			
+			
+			
 		}
-		else //affiche le tableau des éléves postulant en FA
+		
+		
+		// Choisit filiere alternance
+		else
 		{
-			//affiche l'entete du tableau 
-			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="8" style="width: 55% id=trier;">
+			$nb_lignes_total= $bd->prepare('SELECT COUNT(*) AS total FROM AtraiterFA'); //Nous récupérons le contenu de la requête dans $retour_total, requete differentes dans chaque cas
+			$nb_lignes_total->execute();
+			while($donnees_total=$nb_lignes_total->fetch(PDO::FETCH_ASSOC))
+			{
+				$total = $donnees_total['total']; //On récupère le total pour le placer dans la variable $total.
+			}
+			
+			$messagesParPage=25; //Nous allons afficher 5 messages par page.
+
+			//Nous allons maintenant compter le nombre de pages.
+			$nombreDePages=ceil($total/$messagesParPage);
+			
+			
+			if(isset($_GET['page'])) // Si la variable $_GET['page'] existe...
+			{
+				$pageActuelle=intval($_GET['page']);
+			 
+				if($pageActuelle>$nombreDePages) // Si la valeur de $pageActuelle (le numéro de la page) est plus grande que $nombreDePages...
+				{
+					$pageActuelle=$nombreDePages;
+				}
+			}
+			
+			else // Sinon
+			{
+				$pageActuelle=1; // La page actuelle est la n°1    
+			}
+
+			$premiereEntree=($pageActuelle-1)*$messagesParPage; // On calcul la première entrée à lire
+			
+			pagination($nombreDePages, $pageActuelle, $f);
+			
+			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr style="background-color:#F0F0F0;">
 			<th><div class=arrow2>Nom</div><div class=arrow><div><span onclick=TableOrder(event,0)>&#9650;</span></div><div><span onclick=TableOrder(event,1)>&#9660;</span></div></div></th>
@@ -700,32 +795,39 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>Postule en Initiale</th>
 			<th>Selectionner</th>
 			</tr> ';
+			
 
-			$req = $bd->prepare('select * from AtraiterFA');
+			$req = $bd->prepare('select * from AtraiterFA order by moyenne DESC LIMIT '.$premiereEntree.', '.$messagesParPage.'');
 			$req->execute();
 
 
 			//Permet de récuperer le nom de la filiere dans la variable POST
 			echo '<input type="hidden" name="filiere" value="'.$f.'"/>';
-			
-			//affiche les lignes du tableau
+
 			while($rep = $req->fetch(PDO::FETCH_ASSOC))
 			{
 				$filiere=postule2filiere($bd,$rep['Numero']);
-				//if (eleve attribué) tr style = color 
 				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
 				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-				'</td><td>'.$filiere.'</td><center><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></center></tr>';
+				'</td><td>'.$filiere.'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+			}
+			
+		
+			while($rep = $req->fetch(PDO::FETCH_ASSOC))
+			{
+				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
+				if($rep['Moyenne']==NULL)echo '<td>0</td>';
+				else echo '<td>'.$rep['Moyenne'].'</td>';
+				echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+				'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
 			}
 		
 		echo "</tbody></form></table></center>";
-
-
+		
 		}
 	}
-	else{ //affichage du tableau pour les enseignants 
-
-		//affichage de l'entete du tableau
+	else{
+		
 		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr style="background-color:#F0F0F0;">
@@ -738,19 +840,82 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>AvisCE</th>
 			</tr> ';
 
-		//On recupere les étudiants a traiter dans la base
 		if ($f == 'fi')
 		{
-			$req = $bd->prepare('select * from AtraiterFI');
+			$nb_lignes_total= $bd->prepare('SELECT COUNT(*) AS total FROM AtraiterFI'); //Nous récupérons le contenu de la requête dans $retour_total, requete differentes dans chaque cas
+			$nb_lignes_total->execute();
+			while($donnees_total=$nb_lignes_total->fetch(PDO::FETCH_ASSOC))
+			{
+				$total = $donnees_total['total']; //On récupère le total pour le placer dans la variable $total.
+			}
+			
+			$messagesParPage=25; //Nous allons afficher 5 messages par page.
+
+			//Nous allons maintenant compter le nombre de pages.
+			$nombreDePages=ceil($total/$messagesParPage);
+			
+			
+			
+			
+			if(isset($_GET['page'])) // Si la variable $_GET['page'] existe...
+			{
+				$pageActuelle=intval($_GET['page']);
+			 
+				if($pageActuelle>$nombreDePages) // Si la valeur de $pageActuelle (le numéro de la page) est plus grande que $nombreDePages...
+				{
+					$pageActuelle=$nombreDePages;
+				}
+			}
+			
+			else // Sinon
+			{
+				$pageActuelle=1; // La page actuelle est la n°1    
+			}
+	
+			$premiereEntree=($pageActuelle-1)*$messagesParPage; // On calcul la première entrée à lire
+			pagination($nombreDePages, $pageActuelle, $f);
+			
+			$req = $bd->prepare('select * from AtraiterFI order by moyenne DESC LIMIT '.$premiereEntree.', '.$messagesParPage.'');
 			$req->execute();
 		}
+		
 		else
 		{
-			$req = $bd->prepare('select * from AtraiterFA');
+			$nb_lignes_total= $bd->prepare('SELECT COUNT(*) AS total FROM AtraiterFI'); //Nous récupérons le contenu de la requête dans $retour_total, requete differentes dans chaque cas
+			$nb_lignes_total->execute();
+			while($donnees_total=$nb_lignes_total->fetch(PDO::FETCH_ASSOC))
+			{
+				$total = $donnees_total['total']; //On récupère le total pour le placer dans la variable $total.
+			}
+			
+			$messagesParPage=25; //Nous allons afficher 5 messages par page.
+
+			//Nous allons maintenant compter le nombre de pages.
+			$nombreDePages=ceil($total/$messagesParPage);
+			
+			
+			if(isset($_GET['page'])) // Si la variable $_GET['page'] existe...
+			{
+				$pageActuelle=intval($_GET['page']);
+			 
+				if($pageActuelle>$nombreDePages) // Si la valeur de $pageActuelle (le numéro de la page) est plus grande que $nombreDePages...
+				{
+					$pageActuelle=$nombreDePages;
+				}
+			}
+			
+			else // Sinon
+			{
+				$pageActuelle=1; // La page actuelle est la n°1    
+			}
+			
+			$premiereEntree=($pageActuelle-1)*$messagesParPage; // On calcul la première entrée à lire
+			pagination($nombreDePages, $pageActuelle, $f);
+			$req = $bd->prepare('select * from AtraiterFA order by moyenne DESC LIMIT '.$premiereEntree.', '.$messagesParPage.'');
 			$req->execute();
 			
 		}
-		//on affiche les lignes du tableau
+		
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
 			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
@@ -759,11 +924,15 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
 			'</td></tr>';
 		}
-
 		echo "</table></center>";
 	}
+	
+	
+	echo '</p>';
+	
 
 }
+
 
 //Renvoi la valeur du cookie correspondant au champs déja saisi par l'enseignant
 function bonusMalusInsertForm($num, $champs){
