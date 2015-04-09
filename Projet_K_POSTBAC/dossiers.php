@@ -2,15 +2,21 @@
 	session_start();	
 	
 	//une fois que l'utilisateur clique sur 'ok' dans validation temporaire
-	if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
-	{
+	if (isset($_POST['validerTmp']) && is_int()isset($_POST['NumEtudiant']))
+	{			
+				//on enregistre les valeurs (bonus/malus) de l'étudiant dans un tableau 
 				$numEtudiant=$_POST['NumEtudiant'];
 				$bonusMalus= array('dossier' => htmlentities($_POST['dossier']), 
 									'lettre' => htmlentities($_POST['lettre']),
-									'autre' => htmlentities($_POST['autre']));
-			
+									'autre' => htmlentities($_POST['autre']),
+									'filiere' => htmlentities($_POST['filiere'])
+								);
+		
+		//On enregistre le tableau dans un cookie
 		$json = json_encode($bonusMalus);
 		setcookie($numEtudiant, $json, time()+3600*24);
+
+		//On réactualise la page pour enregistrer le cookie
 		echo '<script language="Javascript">
 					document.location.replace("dossiers.php");
 			  </script>';
@@ -52,6 +58,7 @@ if ($_SESSION['admin']==1){
 	//Affiche chaque enseignant dans une liste déroulante (<SELECT>)
 	while($tmp1=$req->fetch(PDO::FETCH_ASSOC)){
 
+		//on affiche les enseignants dans <OPTION du select
 		echo 	"<OPTION value=".$tmp1['login'].">".$tmp1['nom']." ".$tmp1['prenom'];
 
 	}
@@ -84,8 +91,11 @@ else{
 
 	// print_r($_SESSION);
 
+	//Si le formulaire final a été valider
 	if (isset($_GET['formFinal']))
 	{
+
+		//On demande confirmation
 		echo '<center><p style="color: red;">Etes-vous sures de vouloir valider se formulaire ? Aucune modification ne pourra être faites par la suite !</p></center>';
 		echo '<center>
 		<form method="get" action="dossiers.php">
@@ -94,6 +104,16 @@ else{
 		</form>
 		</center>';
 	}
+
+	//Si la confirmation du formulaire final a été accepté 
+	if( isset($_GET['ValidationFinal']) && $_GET['ValidationFinal']=='oui'){
+
+
+			echo bonusMalusInsertForm(713350, 'filiere');
+			$total = bonusMalusInsertForm($rep2[713350], 'dossier') + bonusMalusInsertForm($rep2[713350], 'lettre') + bonusMalusInsertForm($rep2[713350], 'autre');
+			echo $total;
+	}
+
 
 	if (isset($_SESSION['name']))
 	{
@@ -112,19 +132,20 @@ else{
 
 	echo '<Form></center>';
 
-	//une fois que l'utilisateur clique sur 'ok' dans validation temporaire
-	if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
-	{
-		$cookie = $_COOKIE[$numEtudiant];
-		$cookie = stripslashes($cookie);
-		$bonusMalus = json_decode($cookie, true);
+	// //une fois que l'utilisateur clique sur 'ok' dans validation temporaire
+	// if (isset($_POST['validerTmp']) && isset($_POST['NumEtudiant']))
+	// {
+	// 	//Le cookie préparer précédement s'enregistre
+	// 	$cookie = $_COOKIE[$numEtudiant];
+	// 	$cookie = stripslashes($cookie);
+	// 	$bonusMalus = json_decode($cookie, true);
 
-	}
+	// }
 
 	// unset($_COOKIE['214346']);
 	// print_r($_COOKIE);
 	// print_r($_POST);
-	// print_r($_GET);
+	print_r($_GET);
 
 }
 

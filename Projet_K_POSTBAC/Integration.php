@@ -72,12 +72,13 @@ echo $insertion4;
 
 
 createTableID($bd);
-ajoutColonneEnseignant($bd);
 supprimerNULL($bd);
 tableEtudiantAvecMoyenne($bd);
 eleveSelectionner($bd);
 eleveATraiter($bd);
 elevePostuleFAFI($bd);
+ajoutColonneEnseignant($bd);
+
 
 
 

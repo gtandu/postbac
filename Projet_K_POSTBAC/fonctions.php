@@ -15,8 +15,10 @@ error_reporting(E_ALL); //Affiche toutes les erreurs
 //Fonction qui récupère un fichier CSV sous forme d'array 
 function get_array($fileCsv) {
 
+	//On ouvre le fichier csv
     if (($file = fopen($fileCsv, 'r')) !== FALSE){
 
+    	//On enregistre les lignes dans un array
       while (($line = fgetcsv($file,'',';')) !== FALSE) {
 
         $array_data[] = $line;
@@ -26,7 +28,7 @@ function get_array($fileCsv) {
     }
 
   fclose($file);
-
+  //On retourne le tableau du fichier csv 
   return $array_data;
 
 }
@@ -39,6 +41,7 @@ function createTable($nomTable, $array_file, $primaryCles1){
 
 	$i=0; 
 
+	//Décomposition du fichier csv
 	while ($i<sizeof($array_file[0])){
 
 		if (is_numeric(str_replace ( ",", ".", $array_file[1][$i])))
@@ -72,13 +75,14 @@ function createTable($nomTable, $array_file, $primaryCles1){
 // fonction qui prépare la requête d'insertion des fichier csv 
 function prepareInsert($array_file, $nomTable, $line){
 
+	//On vérifie que la ligne existe
 	if ($line>(count($array_file)-1))
 	{
 		return 'Erreur $line: cette ligne n\'existe pas';
 	}
 
 	$insert= 'INSERT INTO '.$nomTable.' VALUES( ';
-
+	//On prepare la requete d'insertion
 	for($y=0; $y<count($array_file[0]);$y++)
 	{
 		if (is_numeric(str_replace ( ",", ".", $array_file[$line][$y]))==FALSE)
@@ -137,12 +141,14 @@ function prepareInsert($array_file, $nomTable, $line){
 		}	
 	}
 
+	//on retourne la requête d'insertion pour une ligne du tableau 
 	return $insert;
 }
 
 //Fonction qui insert toutes les lignes du fichier csv dans la base
 function insert($bd, $nomTable, $array_file){
 
+	//On prepare la requete de chaque ligne du tableau et on l'execute
 	for ($i=1;$i<count($array_file);$i++)
 	{
 		$insert=prepareInsert($array_file, $nomTable, $i);	
@@ -175,6 +181,7 @@ function createTableID($bd){
 	$req->execute();
 }
 //createTableID($bd);
+
 //Nombre d'enseignant enregister dans la base 
 function nbEnseignant($bd){
 	
@@ -259,26 +266,30 @@ function generer_login($bd, $nom, $prenom)
 function insertDataEnseignants($bd){
 
 	$mdp=generer_mot_de_passe(8);
+	//On verifie que tous les champs on été saisie 
     if(isset($_GET['nom']) && trim($_GET['nom']!=NULL) && isset($_GET['prenom']) && trim($_GET['prenom']!=NULL) && isset($_GET['matiere']) && trim($_GET['matiere']!=NULL) && isset($_GET['email']) && trim($_GET['email']))
     {
-
-		$login = generer_login($bd, $_GET['nom'], $_GET['prenom']);
+    	//On genere un mot de passe
+		$login = generer_login($bd, htmlentities($_GET['nom']), htmlentities($_GET['prenom']));
 		$derniercaractere = substr($login,-1);
+
+		//on prépare la requete
         $query='INSERT INTO identification VALUE ( :login, :nom, :prenom, :email ,:mdp, :matiere, 0, 0)';
         $req=$bd->prepare($query);
         $req->bindValue('login', $login);
-        $req->bindValue(':nom', $_GET['nom']);
-        $req->bindValue(':prenom', $_GET['prenom']);
+        $req->bindValue(':nom', htmlentities($_GET['nom']));
+        $req->bindValue(':prenom', htmlentities($_GET['prenom']));
 
-        $req->bindValue(':email', $_GET['email']);
+        $req->bindValue(':email', htmlentities($_GET['email']));
 
         $req->bindValue(':mdp', $mdp);
-        $req->bindValue(':matiere', $_GET['matiere']);
+        $req->bindValue(':matiere', htmlentities($_GET['matiere']));
        
+       	//si la requete a été executé, on envoi un mail récapitulatif
         if($req->execute())
         {
-        	mail( $_GET['email'], 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
-        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_GET['nom'] .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div></center>';
+        	mail( htmlentities($_GET['email']), 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
+        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_GET['nom']) .' '. htmlentities($_GET['prenom']) .' à été enregistré !</strong></p></div></center>';
         };
     }
 }
@@ -286,23 +297,25 @@ function insertDataEnseignants($bd){
 function modifDataEnseignants($bd){
 //Modification des données de l'enseigant à partir du formulaire modifProf
 	
+	//On verifie que les champs du formulaire on bien été saisie 
     if(isset($_POST['nom']) && trim($_POST['nom']!=NULL) && isset($_POST['prenom']) && trim($_POST['prenom']!=NULL) && isset($_POST['matiere']) && trim($_POST['matiere']!=NULL) && isset($_POST['email']) && trim($_POST['email']))
     {
 
 		
-		
+		//on prepare la requete 
         $query='UPDATE identification SET nom=:nom, prenom=:prenom, email=:email, matiere=:matiere WHERE login=:login  ';
         $req=$bd->prepare($query);
-        $req->bindValue('login', $_POST['login']);
-        $req->bindValue(':nom', $_POST['nom']);
-        $req->bindValue(':prenom', $_POST['prenom']);
-		$req->bindValue(':email', $_POST['email']);
-		$req->bindValue(':matiere', $_POST['matiere']);
+        $req->bindValue('login', htmlentities($_POST['login']));
+        $req->bindValue(':nom', htmlentities($_POST['nom']));
+        $req->bindValue(':prenom', htmlentities($_POST['prenom']));
+		$req->bindValue(':email', htmlentities($_POST['email']));
+		$req->bindValue(':matiere', htmlentities($_POST['matiere']));
        
+       //si la requete est éxécuté on affiche un message 
         if($req->execute())
         {
         	
-        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. $_POST['nom'] .' '. $_POST['prenom'] .' à bien été moddifier !</strong></p></div></center>';
+        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_POST['nom']) .' '. htmlentities($_POST['prenom']) .' à bien été moddifier !</strong></p></div></center>';
         };
     }
 }
@@ -317,8 +330,8 @@ function majMdpEnseignant($bd){
 		
 		$req=$bd->prepare($query);
 		$req->bindValue('login',$_SESSION['name']);
-		$req->bindValue('mdp_actif',$_POST['mdp_actuel']);
-		$req->bindValue('new_mdp',$_POST['new_mdp']);
+		$req->bindValue('mdp_actif',htmlentities($_POST['mdp_actuel']));
+		$req->bindValue('new_mdp',htmlentities($_POST['new_mdp']));
 		$req->execute();
         
 		if($req->rowCount()==1)
@@ -342,8 +355,8 @@ function MajEmailEnseignant($bd){
 		
 		$req=$bd->prepare($query);
 		$req->bindValue('login',$_SESSION['name']);
-		$req->bindValue('mdp_actif',$_POST['mdp_actif']);
-		$req->bindValue('mail_actif', $_POST['adresse_mail_actif']);
+		$req->bindValue('mdp_actif',htmlentities($_POST['mdp_actif']));
+		$req->bindValue('mail_actif', htmlentities($_POST['adresse_mail_actif']));
 		$req->execute();
 		
 		if($req->rowCount()==1)
@@ -358,7 +371,7 @@ function MajEmailEnseignant($bd){
 			
 			// Préparation du mail contenant le lien d'activation
 			$login = $_SESSION['name'];
-			$destinataire = $_POST['new_adresse_mail'];
+			$destinataire = htmlentities($_POST['new_adresse_mail']);
 			$sujet = "Activer votre compte" ;
 			$entete = "From: changementemail@postbac.com" ;
 			 
@@ -391,6 +404,7 @@ function MajEmailEnseignant($bd){
 // Récupération des enseignant dans la table et affichage du tableau 
 function afficheProf($bd){
 
+	//on récupere les enseignants dans la base 
 	$query="SELECT * FROM identification WHERE admin=0";
 	$req=$bd->prepare($query);
 	$req->execute();
@@ -470,6 +484,7 @@ function supprimeProf($bd, $loginProf){
 // fonction qui renvoie le nombre de candidats attribué à un enseignant donnée ($prof)
 function countCandidatProf($bd, $prof){
 
+	//On recupere les élève FI qui ont un enseignant attribué
 	$query="SELECT count(*) FROM EtudiantFI WHERE enseignant =  :prof";
 	$req=$bd->prepare($query);
 	$req->bindValue('prof',$prof);
@@ -478,6 +493,7 @@ function countCandidatProf($bd, $prof){
 
 	// print_r($rep);
 
+	//On recupere les élève FA qui ont un enseignant attribué
 	$query2="SELECT count(*) FROM EtudiantFA WHERE enseignant =  :prof";
 	$req2=$bd->prepare($query2);
 	$req2->bindValue('prof',$prof);
@@ -499,20 +515,21 @@ function countCandidatProf($bd, $prof){
 //fonction qui retourne True si l'étudiant ($num) a postulé dans les deux filière
 function postule2filiere($bd,$num){
 	
+	//On recupere les etudiants qui postule pour les deux filiere
 	$query="SELECT Numero FROM EtudiantFIFA";
 	$req=$bd->prepare($query);
 	$req->execute();	
 
+	//on verifie si l'étudiant passé en parametre existe dans EtudiantFIFA
 	while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
+			//si oui, 
 			if ($num == $rep['Numero'])
 			{
-				$query="DELETE FROM  EtudiantFI WHERE Numero = :num";
-				$req2=$bd->prepare($query);
-				$req2->bindValue('num',$num);
-				$req2->execute();
 				return 'OUI';
 			}
+
+
 		}
 		return 'NON';
 
@@ -567,7 +584,8 @@ function ajoutLoginEnseignant($bd, $prof, $filiere, $id){
 
 	if ($colonne !== FALSE){
 
-		$query="UPDATE ".$filiere." SET enseignant = :prof WHERE Numero = :id";// trouver moyen d'inserer que pour un élève
+		// On prépare la requete qui va insérer l'id de l'enseignant
+		$query="UPDATE ".$filiere." SET enseignant = :prof WHERE Numero = :id";
 		$req=$bd->prepare($query);
 		$req->bindValue('prof',$prof);
 		$req->bindValue('id',$id);
@@ -592,6 +610,7 @@ function searchEleve($bd, $id, $fi){
 
 function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons Alternance/initiale au-dessus de la liste )
 {							 // avec une checkbox avec comme valeur le num de l'eleve
+	//POur la session administrateur 
 	if ($_SESSION['admin']==1){
 		
 		
@@ -608,9 +627,10 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 
 
 		
-
+		//affiche le tableau des éléves postulant en FI
 		if ($f == 'fi')
 		{	
+			//affiche l'entete du tableau
 			echo '<center><table  class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
 		<thead>
@@ -631,15 +651,24 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			//Permet de récuperer le nom de la filiere dans la variable POST
 			echo '<input type="hidden" name="filiere" value="'.$f.'"/>';
 
+			//affiche les lignes du tableau
 			while($rep = $req->fetch(PDO::FETCH_ASSOC))
 			{	
-				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-				'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+				//on verifie que l'élève ne postule pas dans les deux filiere 
+				$filiere=postule2filiere($bd,$rep['Numero']);
+				if ($filiere == 'NON'){
+
+					echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+					<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+					'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+
+				}
+				
 			}
 		}
-		else
+		else //affiche le tableau des éléves postulant en FA
 		{
+			//affiche l'entete du tableau 
 			echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="8" style="width: 55% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr style="background-color:#F0F0F0;">
@@ -660,7 +689,8 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 
 			//Permet de récuperer le nom de la filiere dans la variable POST
 			echo '<input type="hidden" name="filiere" value="'.$f.'"/>';
-
+			
+			//affiche les lignes du tableau
 			while($rep = $req->fetch(PDO::FETCH_ASSOC))
 			{
 				$filiere=postule2filiere($bd,$rep['Numero']);
@@ -669,24 +699,15 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
 				'</td><td>'.$filiere.'</td><center><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></center></tr>';
 			}
-			
-		
-		// while($rep = $req->fetch(PDO::FETCH_ASSOC))
-		// {
-		// 	echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
-		// 	if($rep['Moyenne']==NULL)echo '<td>0</td>';
-		// 	else echo '<td>'.$rep['Moyenne'].'</td>';
-		// 	echo '<td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-		// 	'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
-		// }
 		
 		echo "</tbody></form></table></center>";
 
 
 		}
 	}
-	else{
+	else{ //affichage du tableau pour les enseignants 
 
+		//affichage de l'entete du tableau
 		echo '<center><table class="pure-table-horizontal" border="1" CELLPADDING="10" style="width: 40% id=trier;">
 		<CAPTION style="padding: 2em;"><strong>LISTE DES ELEVES</strong></CAPTION>
  		<tr style="background-color:#F0F0F0;">
@@ -699,6 +720,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			<th>AvisCE</th>
 			</tr> ';
 
+		//On recupere les étudiants a traiter dans la base
 		if ($f == 'fi')
 		{
 			$req = $bd->prepare('select * from AtraiterFI');
@@ -710,6 +732,7 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 			$req->execute();
 			
 		}
+		//on affiche les lignes du tableau
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
 			echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>';
@@ -729,7 +752,7 @@ function bonusMalusInsertForm($num, $champs){
 
 		if( isset($_COOKIE[$num]) ){
 		
-			
+				//on recupere les cookie et on met les valeur dans un array 
 				$cookie = $_COOKIE[$num];
 				$cookie = stripslashes($cookie);
 				$val = json_decode($cookie, true);
@@ -743,13 +766,13 @@ function bonusMalusInsertForm($num, $champs){
 //Fonction qui retourne tous les candidats ayant été attribuer a un enseignant donné en paramètre ($prof).
 function afficheCandidatDuProf($bd, $prof){
 
-	//on récupere les étudiant à traité de la table FI
+	//on récupere les étudiant à traité par le prof passé en parametre de la table FI
 	$query="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI WHERE enseignant =  :prof";
 	$req=$bd->prepare($query);
 	$req->bindValue('prof',$prof);
 	$req->execute();
 
-	//on récupere les étudiant à traité de la table FA
+	//on récupere les étudiant à traité par le prof passé en parametre de la table FA
 	$query2="SELECT Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA WHERE enseignant =  :prof";
 	$req2=$bd->prepare($query2);
 	$req2->bindValue('prof',$prof);
@@ -813,14 +836,14 @@ function afficheCandidatDuProf($bd, $prof){
 			
 			echo '<FORM method = "post" action="dossiers.php">
 			<tr><td><a href="URL demandé à gerard">'.$rep['Nom'].'</a></td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-			<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier" value="'.bonusMalusInsertForm($rep['Numero'], 'dossier').'"></td><td><input type="text" size="3" name="lettre" value="'.bonusMalusInsertForm($rep['Numero'], 'lettre').'"></td><td><input type="text" size="3" name="autre" value="'.bonusMalusInsertForm($rep['Numero'], 'autre').'"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/></FORM>';
+			<td>'.$rep['Moyenne'].'</td><td><input type="text" size="3" name="dossier" value="'.bonusMalusInsertForm($rep['Numero'], 'dossier').'"></td><td><input type="text" size="3" name="lettre" value="'.bonusMalusInsertForm($rep['Numero'], 'lettre').'"></td><td><input type="text" size="3" name="autre" value="'.bonusMalusInsertForm($rep['Numero'], 'autre').'"></td><td>'.$rep['AvisDuCE'].'</td><td>Filière Initiale</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr><input type="hidden" name="NumEtudiant" value="'.$rep['Numero'].'"/><input type="hidden" name="filiere" value="EtudiantFI"/></FORM>';
 		}
 
 		while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
 		{
 			echo '<FORM method = "post" action="dossiers.php">
 			<tr><td><a href="URL demandé gerard">'.$rep2['Nom'].'</a></td><td>'.$rep2['Prénom'].'</td><td>'.$rep2['Numero'].'</td><td>'.$rep2['InfosDiplôme'].'</td>
-			<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier" value="'.bonusMalusInsertForm($rep2['Numero'], 'dossier').'"></td><td><input type="text" size="3" name="lettre" value="'.bonusMalusInsertForm($rep2['Numero'], 'lettre').'"></td><td><input type="text" size="3" name="autre" value="'.bonusMalusInsertForm($rep2['Numero'], 'autre').'"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr><input type="hidden" name="NumEtudiant" value="'.$rep2['Numero'].'"/></FORM>';
+			<td>'.$rep2['Moyenne'].'</td><td><input type="text" size="3" name="dossier" value="'.bonusMalusInsertForm($rep2['Numero'], 'dossier').'"></td><td><input type="text" size="3" name="lettre" value="'.bonusMalusInsertForm($rep2['Numero'], 'lettre').'"></td><td><input type="text" size="3" name="autre" value="'.bonusMalusInsertForm($rep2['Numero'], 'autre').'"></td><td>'.$rep2['AvisDuCE'].'</td><td>Filière Alternance</td><td><center><input class="pure-button pure-input-1-2 pure-button-primary" type="submit" name="validerTmp" value="Ok"></center></td></tr><input type="hidden" name="NumEtudiant" value="'.$rep2['Numero'].'"/><input type="hidden" name="filiere" value="EtudiantFA"/></FORM>';
 		}
 
 		// echo '<input class="pure-button pure-input-1-2 pure-button-primary" style="margin-top: 1.5em; border-radius:3px;" type="submit" name="formFinal" value="Validation Final">';
@@ -853,7 +876,7 @@ function tableEtudiantAvecMoyenne($bd){
 
 	$req = $bd->prepare('ALTER TABLE EtudiantFA ADD PRIMARY KEY (Numero)');
 	$req->execute();
-	echo 'EtudiantFA TABLE CREATE';
+	echo '..............EtudiantFA TABLE CREATE..............<br>';
 
 	/////////////////////CAS FI/////////////////////
 	//											  //
@@ -870,7 +893,7 @@ function tableEtudiantAvecMoyenne($bd){
 
 	$req = $bd->prepare('ALTER TABLE EtudiantFI ADD PRIMARY KEY (Numero)');
 	$req->execute();
-	echo 'EtudiantFI TABLE CREATE';
+	echo '..............EtudiantFI TABLE CREATE..............<br>';
 
 }
 //tableEtudiantAvecMoyenne($bd);
@@ -893,7 +916,7 @@ function eleveSelectionner($bd){
 						AS SELECT 
 						RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA ORDER BY Moyenne DESC LIMIT '.$calcul);//on insere ds la nouvelle table les eleves du 1° quart qui sont admis d'office
 	$req->execute();
-	echo 'SelectionneFA VIEW CREATE';
+	echo '.................SelectionneFA VIEW CREATE..............<br>';
 	
 	/////////////////////CAS FI/////////////////////
 	//											  //
@@ -910,7 +933,7 @@ function eleveSelectionner($bd){
 						AS SELECT 
 						RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFI ORDER BY Moyenne DESC LIMIT '.$calcul);//on insere ds la nouvelle table les eleves du 1° quart qui sont admis d'office
 	$req->execute();
-	echo 'SelectionneFI VIEW CREATE';
+	echo '.................SelectionneFI VIEW CREATE..............<br>';
 
 }
 //eleveSelectionner($bd);
@@ -928,20 +951,20 @@ function eleveATraiter($bd)
 	
 	$rep = $req->fetch(PDO::FETCH_NUM);
 	
-	 $calcul = $rep[0]/4;
+	 $calcul = $rep[0]/4;// On calcule le 1/4
 	 $req = $bd->prepare('CREATE VIEW AtraiterFA (RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE) 
 	 					  AS SELECT  
 	 					  RangProvisoire, Numero, Nom, Prénom, Moyenne, InfosDiplôme, Spécialité, NombreDeBonusMalusAppliqués, AvisDuCE FROM EtudiantFA 
 	 					  ORDER BY Moyenne DESC LIMIT :limite, :offset');
 
 	 $req->bindValue(':limite', $calcul, PDO::PARAM_INT);
-	 $calcul = $calcul*3;
+	 $calcul = $calcul*3; //On calcule  les 3/4 du milieu
 	 $req->bindValue(':offset', $calcul, PDO::PARAM_INT);
 	 $req->execute();
 
 	 // $req = $bd->prepare('ALTER TABLE AtraiterFA ADD PRIMARY KEY (Numero)');
 	 // $req->execute();
-	  echo 'AtraiterFA VIEW CREATE';
+	  echo '.................AtraiterFA VIEW CREATE.................<br>';
 	
 	/////////////////////CAS FI/////////////////////
 	//											  //
@@ -966,7 +989,7 @@ function eleveATraiter($bd)
 
 	 // $req = $bd->prepare('ALTER TABLE AtraiterFI ADD PRIMARY KEY (Numero)');
 	 // $req->execute();
-	 echo 'AtraiterFI VIEW CREATE';
+	 echo '.................AtraiterFI VIEW CREATE.................<br>';
 	
 }
 //eleveATraiter($bd);
@@ -980,9 +1003,12 @@ function elevePostuleFAFI($bd)
 						WHERE EtudiantFI.Numero = EtudiantFA.Numero
 						ORDER BY Moyenne DESC');
 	$req->execute();
+
+	echo '.................EtudiantFAFI VIEW CREATE.................<br>';
 }
 //elevePostuleFAFI($bd);
 
+//Supprime de la base de données tous les candidats qui ont une moyenne NULL ou = 0
 function supprimerNULL($bd){
 
 	$req = $bd->prepare("DELETE FROM EtudiantFA WHERE Moyenne IS NULL OR Moyenne=0");
@@ -996,28 +1022,38 @@ function supprimerNULL($bd){
 }
 //supprimerNULL($bd);
 
-function bonusMalusTotal($bd, $ine, $bn) //applique les bonus/malus aux eleves ON A BESOIN DU FORMULAIRE BORDEL DE MERDE!!!!!! --> Je t'en pris fait le si c'est si urgent !!!!!!!
-{
-	$req = $bd->prepare('UPDATE m SET Moyenne = Moyenne+ :bn  WHERE Numero = :ine');//On icrémente la moyenne de l'eleve de la valeur de bn
-	$req->bindValue(':bn', $bn);
-	$req->bindValue(':ine', $ine);
+//applique les bonus/malus aux eleves 
+function bonusMalusTotal($bd, $filiere, $prof) {
+
+	//On recupere le numero des étudiants attribuer a l'enseignant (prof)
+	$query="SELECT Numero FROM EtudiantFI WHERE enseignant =  :prof";
+	$req=$bd->prepare($query);
+	$req->bindValue('prof',$prof);
 	$req->execute();
+
+	$query="SELECT Numero FROM EtudiantFA WHERE enseignant =  :prof";
+	$req2=$bd->prepare($query);
+	$req2->bindValue('prof',$prof);
+	$req2->execute();
+
+
+	while($rep = $req->fetch(PDO::FETCH_ASSOC))
+		{
+			$total = bonusMalusInsertForm($rep2['Numero'], 'dossier') + bonusMalusInsertForm($rep2['Numero'], 'lettre') + bonusMalusInsertForm($rep2['Numero'], 'autre');
+			echo $total;
+			// $query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués = :total WHERE Numero = :id";
+			
+		}
+
+	while($rep2 = $req2->fetch(PDO::FETCH_ASSOC))
+		{
+			$query="UPDATE EtudiantFI SET NombreDeBonusMalusAppliqués =  WHERE Numero = :id";
+		}
+
+	
+
 }
 
-/*liste des fonction
-
-
-
-->fonctions des malus automatiques
-
-->fonctions des bonus automatiques
-
-
-
-->Affiche touts les etudiants
-
-
-*/
 
 
 
