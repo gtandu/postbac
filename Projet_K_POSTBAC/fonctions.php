@@ -77,29 +77,22 @@ function prepareInsert($array_file, $nomTable, $line){
 
 
 	//On vérifie que la ligne existe
-<<<<<<< HEAD
-	if ($line>(count($array_file)-1))
-=======
 
-	if (htmlentities($line)>(count(htmlentities($array_file))-1))
->>>>>>> de83e66dc8e2c706e7745c79d73d220ebbd0435e
+	if ($line>(count($array_file)-1))
 	{
 		return 'Erreur $line: cette ligne n\'existe pas';
 	}
 
 
-<<<<<<< HEAD
+
 	$insert= 'INSERT INTO '.$nomTable.' VALUES( ';
-=======
->>>>>>> de83e66dc8e2c706e7745c79d73d220ebbd0435e
+
 	//On prepare la requete d'insertion
 
 	$insert= 'INSERT INTO '.htmlentities($nomTable).' VALUES( ';
 
-<<<<<<< HEAD
-=======
 
->>>>>>> de83e66dc8e2c706e7745c79d73d220ebbd0435e
+
 	for($y=0; $y<count($array_file[0]);$y++)
 	{
 		if (is_numeric(str_replace ( ",", ".", $array_file[$line][$y]))==FALSE)
@@ -160,12 +153,8 @@ function prepareInsert($array_file, $nomTable, $line){
 
 
 	//on retourne la requête d'insertion pour une ligne du tableau 
-<<<<<<< HEAD
-	return $insert;
-=======
 
-	return htmlentities($insert);
->>>>>>> de83e66dc8e2c706e7745c79d73d220ebbd0435e
+	return $insert;
 
 }
 
@@ -314,11 +303,8 @@ function insertDataEnseignants($bd){
         {
 
         	mail( htmlentities($_GET['email']), 'Identifiant et Mot de passe PostBac', 'le message', null, 'tbrandon91@hotmail.fr');
-<<<<<<< HEAD
+
         	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_GET['nom']) .' '. htmlentities($_GET['prenom']) .' à été enregistré !</strong></p></div></center>';
-=======
-        	echo '<center><div style="margin-left: auto; margin-right: auto; width: 28%; "><p style="color:red;"><strong>'. htmlentities($_GET['nom']) .' '. $_GET['prenom'] .' à été enregistré !</strong></p></div></center>';
->>>>>>> de83e66dc8e2c706e7745c79d73d220ebbd0435e
 
         };
     }
@@ -749,9 +735,13 @@ function afficheEleve($f,$bd)//Affiche les eleves en fonction de $f (les boutons
 
 			while($rep = $req->fetch(PDO::FETCH_ASSOC))
 			{	
-				echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
-				<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
-				'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+				$filiere=postule2filiere($bd,$rep['Numero']);
+				if ($filiere == 'NON'){
+					echo '<tr><td>'.$rep['Nom'].'</td><td>'.$rep['Prénom'].'</td><td>'.$rep['Numero'].'</td><td>'.$rep['InfosDiplôme'].'</td>
+					<td>'.$rep['Moyenne'].'</td><td>'.$rep['NombreDeBonusMalusAppliqués'].'</td><td>'.$rep['AvisDuCE'].
+					'</td><td><input type="checkbox" name="selection[]" value="'.$rep['Numero'].'"/></td></tr>';
+				}
+				
 			}
 			
 			
