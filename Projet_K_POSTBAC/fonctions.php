@@ -186,7 +186,7 @@ function createTableID($bd){
  	`nom` VARCHAR( 50 ) NOT NULL ,
  	`prenom` VARCHAR( 50 ) NOT NULL ,
  	`email` VARCHAR( 50 ) NOT NULL ,
- 	`mdp` VARCHAR( 50 ) NOT NULL ,
+ 	`mdp` VARCHAR( 100 ) NOT NULL ,
  	`matiere` VARCHAR( 50 ) NOT NULL ,
  	`cle` VARCHAR ( 32 ),
  	`admin` INTEGER NOT NULL,
@@ -315,6 +315,8 @@ function insertDataEnseignants($bd){
         };
     }
 }
+
+
  
 function modifDataEnseignants($bd){
 //Modification des données de l'enseigant à partir du formulaire modifProf
@@ -345,28 +347,34 @@ function modifDataEnseignants($bd){
 
 // Met a jour le mot de passe d'un enseignant sur sa page de profil
 function majMdpEnseignant($bd){
-	
-	if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['new_mdp']) && trim($_POST['new_mdp']!=NULL))
+	$req=$bd -> prepare('SELECT * FROM identification');
+	$req->execute();
+	$msg= "";
+	while($rep = $req->fetch(PDO::FETCH_ASSOC))
 	{
-		$query='UPDATE identification SET mdp =:new_mdp WHERE login =:login and mdp = :mdp_actif';
+		if(isset($_POST['mdp_actuel']) && trim($_POST['mdp_actuel']!=NULL) && isset($_POST['new_mdp']) && trim($_POST['new_mdp']!=NULL))
+		{	
+			
+			if(password_verify($_POST['mdp_actuel'], $rep['mdp']))
+			{
+				$query='UPDATE identification SET mdp =:new_mdp WHERE login =:login and mdp = :mdp_actif';
+				$hashMDP = password_hash($_POST['new_mdp'],PASSWORD_BCRYPT) ;
+				$req=$bd->prepare($query);
+				$req->bindValue('login',$_SESSION['name']);
+				$req->bindValue('mdp_actif',htmlentities($rep['mdp']));
+				$req->bindValue('new_mdp',htmlentities($hashMDP));
+				$req->execute();
+				
+				return $msg="Mot de passe changé !";
+				
+			}
 		
-		$req=$bd->prepare($query);
-		$req->bindValue('login',$_SESSION['name']);
-		$req->bindValue('mdp_actif',htmlentities($_POST['mdp_actuel']));
-		$req->bindValue('new_mdp',htmlentities($_POST['new_mdp']));
-		$req->execute();
-        
-		if($req->rowCount()==1)
-		{
-			return $msg="Mot de passe changé !";
+		
+		
 		}
-		
-		else
-		{
-			return $msg="Erreur mot de passe actuel";
-		}
-		
 	}
+	return $msg="Erreur mot de passe actuel";
+	
 }
 
 function MajEmailEnseignant($bd){

@@ -23,13 +23,13 @@
 
   //------------------------Vérification des identifiants et mots de passes lors de la connection-------------//
 
- if(!empty($_POST))
-	 
+  if(!empty($_POST)){
+		
 		while($rep = $req->fetch(PDO::FETCH_ASSOC))
 		{
-			//print_r($_POST);
 			if (isset($_POST['name']) && $_POST['name'] == $rep['login']){
-				if (isset($_POST['password']) && $_POST['password'] == $rep['mdp']){
+				// Prevoir pour l'administrateur de le creer avant. Pour forcer la connection avec l'admin enlever "&& password_verify($_POST['password'], $rep['mdp'])" du IF
+				if (isset($_POST['password']) && password_verify($_POST['password'], $rep['mdp'])){
 
 					$_SESSION['admin']=$rep['admin'];
 					$_SESSION['name']=$rep['login'];
@@ -45,7 +45,7 @@
 		}	
 	
 
-
+ }
  ?>
 
  <!------------------Formulaire d'identification---------------->

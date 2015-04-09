@@ -18,11 +18,9 @@
 <?php
 
 
-<<<<<<< HEAD
+
 if (htmlentities($_SESSION['admin'])==1){
-=======
-if ($_SESSION['admin']==1){
->>>>>>> origin/master
+
 
 
  echo '<center><div style="margin-left: auto; margin-right: auto; width: 20%; ">
